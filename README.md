@@ -1,3 +1,4 @@
+
 SimpleInventorySystem
 ├── requirements.txt              # List of Python dependencies for the app
 ├── app.py                        # Main Flask app entry point
