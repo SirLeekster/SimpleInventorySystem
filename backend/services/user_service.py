@@ -2,13 +2,13 @@ from backend.models.user import User
 from backend.database import database
 
 
-def register(data):
+def add_user_to_db(user_data):
     try:
         # Create a new user from the provided data
         new_user = User(
-            username=data.get('username'),
-            email=data.get('email'),
-            password_hash=data.get('password_hash')
+            username=user_data.get('username'),
+            email=user_data.get('email'),
+            password_hash=user_data.get('password_hash')
         )
 
         # Try to create the user in the database
