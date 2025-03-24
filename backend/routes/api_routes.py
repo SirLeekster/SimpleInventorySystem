@@ -8,13 +8,19 @@ api_routes = Blueprint('api_routes', __name__)
 
 @api_routes.route('/api/create_user', methods=['POST'])
 def create_user():
-    user_data:dict = request.get_json()
-    if user_data:
-        success:bool = user_service.add_user_to_db(user_data)
-        if success:
-            return jsonify({"message": f"User created successfully"}), 201
-    return jsonify({"message": "Invalid data"}), 400
+    user_data = request.get_json()
+    print("Received user data:", user_data)
 
+    if not user_data:
+        return jsonify({"message": "No JSON received"}), 400
+
+    result = user_service.add_user_to_db(user_data)
+    if result == True:
+        return jsonify({"message": "User created successfully"}), 201
+    elif result == "duplicate":
+        return jsonify({"message": "Username already exists"}), 409  # Conflict
+    else:
+        return jsonify({"message": "Failed to create user"}), 400
 
 # --- INVENTORY ROUTES ---
 @api_routes.route('/api/get_all_inventory_items', methods=['GET'])
