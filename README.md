@@ -21,6 +21,7 @@ Contains all the backend files for the Flask application.
 
 - **`models/`**: Data models for representing database entities/tables.
   - `user.py`: Defines the User model.
+  -  `inventory_item.py`: Defines an Inventory Item model.
 
 - **`routes/`**: Flask routes (controllers, API endpoints).
   - `main_routes.py`: Main routes for showing the user interface views.
@@ -28,6 +29,7 @@ Contains all the backend files for the Flask application.
 
 - **`services/`**: Contains business logic and services.
   - `user_service.py`: Service layer for user-related logic.
+  - `inventory_service.py`: Service layer for inventory-related logic.
 
 ---
 
