@@ -69,19 +69,21 @@ document.addEventListener("DOMContentLoaded", function () {
     addInventoryForm.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const itemName = document.getElementById("itemName").value.trim();
-      const sku = document.getElementById("sku").value.trim();
+      const productName = document.getElementById("productName").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const category = document.getElementById("category").value.trim() || "General";
       const quantity = parseInt(document.getElementById("quantity").value);
       const price = parseFloat(document.getElementById("price").value);
 
-      if (!itemName || !sku || isNaN(quantity) || isNaN(price)) {
+      if (!productName || isNaN(quantity) || isNaN(price)) {
         alert("Please fill in all fields correctly.");
         return;
       }
 
       const payload = {
-        item_name: itemName,
-        sku: sku,
+        product_name: productName,
+        description: description,
+        category: category,
         quantity: quantity,
         price: price
       };
@@ -108,13 +110,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-});
-// Toggle sidebar collapse
-const sidebar = document.querySelector(".sidebar");
-const toggleBtn = document.getElementById("sidebarToggle");
 
-if (toggleBtn && sidebar) {
-  toggleBtn.addEventListener("click", function () {
-    sidebar.classList.toggle("collapsed");
-  });
-}
+  // Toggle sidebar collapse (kept unchanged)
+  const sidebar = document.querySelector(".sidebar");
+  const toggleBtn = document.getElementById("sidebarToggle");
+
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener("click", function () {
+      sidebar.classList.toggle("collapsed");
+    });
+  }
+});

@@ -4,14 +4,14 @@ from backend.services import organization_service
 
 def add_user_to_db(user_data):
     try:
-        full_name = user_data.get("full_name")
+        username = user_data.get("username")  # <-- updated
         email = user_data.get("email")
         password = user_data.get("password")
         org_data = user_data.get("org_data", {})
         org_choice = org_data.get("org_choice")
         organization_name = org_data.get("organization_name")
 
-        if not full_name or not email or not password:
+        if not username or not email or not password:  # <-- updated
             return "missing_required_fields"
 
         if org_choice not in ["join", "create"]:
@@ -30,7 +30,7 @@ def add_user_to_db(user_data):
                 return "organization_not_found"
 
         new_user = User(
-            full_name=full_name,
+            username=username,   # <-- updated
             email=email,
             password_hash=password,
             organization_id=org.organization_id

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
+    const form = document.getElementById("registrationForm");
     const orgChoice = document.getElementById("orgChoice");
     const joinField = document.getElementById("joinOrgField");
     const createField = document.getElementById("createOrgField");
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         // Gather form input values
-        const fullName = document.getElementById("name").value.trim();
+        const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
         const orgChoice = document.getElementById("orgChoice").value;
         const existingOrg = document.getElementById("existingOrg").value.trim();
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Assemble full user data payload
         const userData = {
-            full_name: fullName,
+            username: username,
             email: email,
             password: password,
             org_data: orgData
