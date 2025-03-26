@@ -40,7 +40,6 @@ def get_dashboard_stats_for_org(organization_id):
         "recent_additions": f"{recent_additions} this week"
     }
 
-
 def add_inventory_item_to_db(item_data, user):
     try:
         new_item = Inventory_Item(
@@ -52,9 +51,10 @@ def add_inventory_item_to_db(item_data, user):
             created_by=user.user_id,
             organization_id=user.organization_id
         )
-        database.add_inventory_item(new_item)
+        db.session.add(new_item)
+        db.session.commit()
         return True
     except Exception as e:
+        print("Inventory DB Insert Error:", e)
+        db.session.rollback()
         return False
-
-
