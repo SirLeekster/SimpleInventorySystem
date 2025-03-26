@@ -1,13 +1,17 @@
 from backend.database import db
 
+
 class Inventory_Item(db.Model):
     __tablename__ = 'inventory'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    product_name = db.Column(db.String, nullable=False)
+    item_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    item_name = db.Column(db.String(255), nullable=False)
+    sku = db.Column(db.String(100), unique=True, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    last_updated = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    price = db.Column(db.Numeric(10, 2), nullable=False)
 
-    def __repr__(self):
-        return f"<Inventory {self.product_name} (Qty: {self.quantity})>"
+    created_by = db.Column(db.BigInteger, db.ForeignKey('users.user_id'), nullable=True)
+    organization_id = db.Column(db.Integer, db.ForeignKey('organizations.organization_id'), nullable=False)
+
+    created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    last_updated = db.Column(db.DateTime, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
