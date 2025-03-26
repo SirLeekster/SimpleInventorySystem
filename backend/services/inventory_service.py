@@ -58,3 +58,23 @@ def add_inventory_item_to_db(item_data, user):
     except Exception:
         return False
 
+def update_item_quantity(item_id: int, change: int):
+    from backend.database import db
+
+    item = Inventory_Item.query.filter_by(item_id=item_id).first()
+
+    if not item:
+        raise Exception("Item not found")
+
+    new_quantity = item.quantity + change
+    if new_quantity < 0:
+        raise Exception("Quantity cannot be negative")
+
+    item.quantity = new_quantity
+    db.session.commit()
+
+    # Optional: low stock check
+    if item.quantity <= item.restock_threshold:
+        print(f"⚠️ Low stock warning for item: {item.item_name}")
+
+    return item
