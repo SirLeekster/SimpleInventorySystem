@@ -1,0 +1,91 @@
+/*
+==============================================================
+ Base Stylesheet - Shared Layout & UI Elements
+--------------------------------------------------------------
+This file contains global styles that are shared across the app,
+including body layout, headers, inputs, buttons, form styles,
+auth utilities, and resets. Do NOT add page-specific styles here.
+==============================================================
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background: #1f2937;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    flex: 1;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    background: #1f2937;
+    color: white;
+    width: 100%;
+    margin-top: auto;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.auth-buttons {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-buttons .button,
+.auth-buttons button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    background: #1f2937;
+    color: #ffffff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.auth-buttons .button:hover,
+.auth-buttons button:hover {
+    background: #374151;
+}
+
+.hidden {
+    display: none;
+}
