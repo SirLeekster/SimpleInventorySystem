@@ -62,6 +62,29 @@ def create_inventory_item():
 
     return jsonify({"message": "Failed to create inventory item"}), 400
 
+# ========================
+# ROUTES FOR API
+# ========================
+@api_routes.route('/api/update_inventory_quantity/<int:item_id>', methods=['PUT'])
+def update_inventory_quantity(item_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    data = request.get_json()
+    if not data or 'change' not in data:
+        return jsonify({"message": "Missing 'change' in request body"}), 400
+
+    change = data['change']
+
+    try:
+        updated_item = inventory_service.update_item_quantity(item_id, change)
+        return jsonify({
+            "message": "Item quantity updated successfully",
+            "item_id": updated_item.item_id,
+            "new_quantity": updated_item.quantity
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # ========================
 # DASHBOARD ROUTES
