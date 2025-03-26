@@ -59,7 +59,7 @@ def create_inventory_item():
     result = inventory_service.add_inventory_item_to_db(item_data, user)
     if result:
         return jsonify({"message": "Inventory item created successfully"}), 201
-
+    print("Inventory creation failed with data:", item_data)
     return jsonify({"message": "Failed to create inventory item"}), 400
 
 # ========================
