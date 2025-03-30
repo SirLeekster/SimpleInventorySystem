@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from backend.routes.main_routes import main_routes
 from backend.routes.api_routes import api_routes
 from backend.database import db
@@ -11,6 +11,9 @@ app = Flask(__name__)
 # Load configuration from config.py
 app.config.from_object(Config)
 
+# Ensure the secret key is set for session management
+if not app.config.get('SECRET_KEY'):
+    app.config['SECRET_KEY'] = os.urandom(24)  # Fallback if SECRET_KEY not in Config
 
 # Initialize the database
 db.init_app(app)

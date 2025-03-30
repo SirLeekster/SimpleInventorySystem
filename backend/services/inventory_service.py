@@ -83,3 +83,7 @@ def update_item_quantity(db: Session, item_id: int, change: int):
         print(f"⚠️ Warning: Item '{item.item_name}' is low on stock!")
 
     return item
+
+def get_items_for_org(organization_id):
+    return Inventory_Item.query.filter_by(organization_id=organization_id).all()
+
