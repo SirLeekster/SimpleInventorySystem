@@ -4,7 +4,7 @@ class Config:
     # Database settings
     DB_HOST = 'localhost'
     DB_USER = 'root'
-    DB_PASSWORD = ''
+    DB_PASSWORD = 'root'
     DB_NAME = 'SimpleInventorySystem'
 
     # Use mysql+mysqlconnector as the database dialect
