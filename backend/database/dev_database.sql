@@ -2,23 +2,27 @@ CREATE DATABASE IF NOT EXISTS simpleinventorysystem;
 
 USE simpleinventorysystem;
 
-CREATE TABLE IF NOT EXISTS organizations (
-    organization_id INT AUTO_INCREMENT PRIMARY KEY,
-    organization_name VARCHAR(100) NOT NULL UNIQUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(150) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    organization_id INT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
-        ON DELETE CASCADE
+    organization_id INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS organizations (
+    organization_id INT AUTO_INCREMENT PRIMARY KEY,
+    organization_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by BIGINT,
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
+        ON DELETE SET NULL
+);
+
+ALTER TABLE users
+ADD FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
+    ON DELETE CASCADE;
 
 CREATE TABLE IF NOT EXISTS user_logs (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -50,6 +54,7 @@ CREATE TABLE IF NOT EXISTS inventory (
 CREATE INDEX idx_inventory_org ON inventory (organization_id);
 CREATE INDEX idx_email ON users(email);
 CREATE INDEX idx_inventory_creator ON inventory(created_by);
+
 
 -- Insert initial organization(s)
 INSERT INTO organizations (organization_name) VALUES

@@ -10,10 +10,14 @@ def get_organization_by_name(name: str) -> Organization | None:
         return None
     return Organization.query.filter_by(organization_name=name.strip()).first()
 
-def create_organization(name: str) -> Organization:
-    #Create a new organization and return it.
-    org = Organization(organization_name=name.strip())
+def create_organization(name: str, created_by: int) -> Organization:
+    org = Organization(
+        organization_name=name.strip(),
+        created_by=created_by
+    )
     from backend.database import db
     db.session.add(org)
     db.session.commit()
     return org
+
+

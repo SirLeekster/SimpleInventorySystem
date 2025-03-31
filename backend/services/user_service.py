@@ -21,30 +21,36 @@ def add_user_to_db(user_data):
         if not organization_name:
             return "missing_org_name"
 
+        # Create user without org_id yet
+        new_user = User(
+            username=username,
+            email=email,
+            password_hash=werkzeug.security.generate_password_hash(password),
+            organization_id=None
+        )
+        db.session.add(new_user)
+        db.session.flush()  # get user_id without full commit
+
         if org_choice == "create":
             org = organization_service.get_organization_by_name(organization_name)
             if org is None:
-                org = organization_service.create_organization(organization_name)
+                org = organization_service.create_organization(organization_name, created_by=new_user.user_id)
         elif org_choice == "join":
             org = organization_service.get_organization_by_name(organization_name)
             if org is None:
                 return "organization_not_found"
 
-        new_user = User(
-            username=username,  
-            email=email,
-            password_hash=werkzeug.security.generate_password_hash(password),
-            organization_id=org.organization_id
-        )
-        
-        db.session.add(new_user)
+        # Now assign the user's organization_id and commit
+        new_user.organization_id = org.organization_id
         db.session.commit()
         return new_user
 
     except Exception as e:
+        db.session.rollback()
         if "Duplicate entry" in str(e):
             return "duplicate"
         return "internal_error"
+
 
 def login_user(login_data):
     try:

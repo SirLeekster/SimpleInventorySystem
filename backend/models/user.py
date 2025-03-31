@@ -4,11 +4,11 @@ class User(db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(150), nullable=False)  # <-- updated
-    email = db.Column(db.String(255), unique=True, nullable=False)
+    username = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    organization_id = db.Column(db.Integer, db.ForeignKey('organizations.organization_id'), nullable=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    organization_id = db.Column(db.Integer, db.ForeignKey('organizations.organization_id', ondelete='CASCADE'), nullable=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
     def __repr__(self):
         return f"<User {self.email}>"
