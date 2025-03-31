@@ -2,6 +2,9 @@ from backend.database import db
 from backend.models.inventory_item import Inventory_Item
 from sqlalchemy import func
 from datetime import datetime, timedelta
+from fastapi import HTTPException
+from backend.models.inventory_item import Inventory_Item
+from sqlalchemy.orm import Session
 
 def get_dashboard_stats_for_org(organization_id):
     total_items = db.session.query(func.count(Inventory_Item.id)).filter_by(
@@ -58,10 +61,6 @@ def add_inventory_item_to_db(item_data, user):
         print("Inventory DB Insert Error:", e)
         db.session.rollback()
         return False
-
-from fastapi import HTTPException
-from backend.models.inventory_item import Inventory_Item
-from sqlalchemy.orm import Session
 
 def update_item_quantity(db: Session, item_id: int, change: int):
     item = db.query(Inventory_Item).filter(Inventory_Item.item_id == item_id).first()
