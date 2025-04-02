@@ -63,50 +63,58 @@
                 </div>
             </div>
         </section>
+        
+        <section id="addInventoryItem" class="content-section hidden">
+            <h2>Add Inventory Item</h2>
+            <form id="addInventoryForm">
+                <label for="productName">Item Name:</label>
+                <input type="text" id="productName" required>
 
-       <section id="addInventoryItem" class="content-section hidden">
-    <h2>Add Inventory Item</h2>
-    <form id="addInventoryForm">
-        <label for="productName">Item Name:</label>
-        <input type="text" id="productName" required>
+                <label for="description">Description (optional):</label>
+                <input type="text" id="description">
 
-        <label for="description">Description (optional):</label>
-        <input type="text" id="description">
+                <label for="category">Category:</label>
+                <input type="text" id="category" value="General">
 
-        <label for="category">Category:</label>
-        <input type="text" id="category" value="General">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" min="0" required>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" min="0" required>
+                <label for="price">Price:</label>
+                <input type="number" id="price" min="0" step="0.01" required>
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" min="0" step="0.01" required>
+                <!-- Custom file input for image upload -->
+                <label for="image">Product Image:</label>
+                <div class="custom-file-input">
+                    <input type="file" id="image" accept="image/*">
+                    <label for="image" class="custom-file-label">Choose Image</label>
+                </div>
 
-        <button type="submit" class="button">Add Item</button>
-    </form>
-</section>
-
+                <button type="submit" class="button">Add Item</button>
+            </form>
+        </section>
 
 
         <section id="manageItems" class="content-section hidden">
             <h2>Manage Inventory</h2>
             <div id="itemsTable">
-                    <table class="inventory-table">
+                <table class="inventory-table">
                     <thead>
-                        <tr>
+                    <tr>
+                        <th>Image</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Category</th>
                         <th>Quantity</th>
                         <th>Price</th>
-                        </tr>
+                    </tr>
                     </thead>
                     <tbody id="inventoryTableBody">
-                        <!-- JS will inject rows here -->
+                    <!-- JS will inject rows here -->
                     </tbody>
-                    </table>
+                </table>
             </div>
         </section>
+
 
         <section id="reports" class="content-section hidden">
             <h2>Reports</h2>
@@ -117,37 +125,37 @@
 
         <section id="settings" class="content-section hidden">
             <h2>My Account</h2>
-            
+
             <div class="profile-container">
                 <div class="profile-header">
                     <h3>Profile Information</h3>
                     <button id="editProfileBtn" class="button">Edit Profile</button>
                 </div>
-                
+
                 <!-- Display Mode (Initially Visible) -->
                 <div id="profileDisplay" class="profile-card">
                     <div class="profile-field">
                         <span class="field-label">Username:</span>
                         <span id="displayUsername" class="field-value">Loading...</span>
                     </div>
-                    
+
                     <div class="profile-field">
                         <span class="field-label">Email Address:</span>
                         <span id="displayEmail" class="field-value">Loading...</span>
                     </div>
-                    
+
                     <div class="profile-field">
                         <span class="field-label">Organization:</span>
                         <span id="displayOrganization" class="field-value">Loading...</span>
                     </div>
-                    
+
                     <div class="profile-field">
                         <span class="field-label">Password:</span>
                         <span class="field-value">••••••••</span>
                         <button id="changePasswordBtn" class="button small">Change</button>
                     </div>
                 </div>
-                
+
                 <!-- Edit Mode (Initially Hidden) -->
                 <div id="profileEdit" class="profile-card hidden">
                     <form id="profileForm">
@@ -155,19 +163,19 @@
                             <label for="username">Username</label>
                             <input type="text" id="username" name="username" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="email">Email Address</label>
                             <input type="email" id="email" name="email" required>
                         </div>
-                        
+
                         <div class="form-actions">
                             <button type="submit" class="button">Save Changes</button>
                             <button type="button" id="cancelEditBtn" class="button cancel">Cancel</button>
                         </div>
                     </form>
                 </div>
-                
+
                 <!-- Password Change (Initially Hidden) -->
                 <div id="passwordChange" class="profile-card hidden">
                     <h3>Change Password</h3>
@@ -176,17 +184,17 @@
                             <label for="currentPassword">Current Password</label>
                             <input type="password" id="currentPassword" name="currentPassword" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
                             <input type="password" id="newPassword" name="newPassword" required>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password</label>
                             <input type="password" id="confirmPassword" name="confirmPassword" required>
                         </div>
-                        
+
                         <div class="form-actions">
                             <button type="submit" class="button">Update Password</button>
                             <button type="button" id="cancelPasswordBtn" class="button cancel">Cancel</button>
@@ -203,36 +211,37 @@
 </footer>
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-</body>]
+</body>
+]
 
 <div id="editModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>Edit Inventory Item</h3>
-    <form id="editInventoryForm">
-      <input type="hidden" id="editItemId">
-      
-      <label>Name</label>
-      <input type="text" id="editName" required>
-      
-      <label>Description</label>
-      <input type="text" id="editDescription">
-      
-      <label>Category</label>
-      <input type="text" id="editCategory">
+    <div class="modal-content">
+        <h3>Edit Inventory Item</h3>
+        <form id="editInventoryForm">
+            <input type="hidden" id="editItemId">
 
-      <label>Quantity</label>
-      <input type="number" id="editQuantity" min="0" required>
+            <label>Name</label>
+            <input type="text" id="editName" required>
 
-      <label>Price</label>
-      <input type="number" id="editPrice" step="0.01" min="0" required>
+            <label>Description</label>
+            <input type="text" id="editDescription">
 
-      <div class="modal-actions">
-        <button type="submit" class="button">Save</button>
-        <button type="button" id="cancelEdit" class="button">Cancel</button>
-        <button type="button" id="deleteItem" class="button delete-btn">Delete</button>
-      </div>
-    </form>
-  </div>
+            <label>Category</label>
+            <input type="text" id="editCategory">
+
+            <label>Quantity</label>
+            <input type="number" id="editQuantity" min="0" required>
+
+            <label>Price</label>
+            <input type="number" id="editPrice" step="0.01" min="0" required>
+
+            <div class="modal-actions">
+                <button type="submit" class="button">Save</button>
+                <button type="button" id="cancelEdit" class="button">Cancel</button>
+                <button type="button" id="deleteItem" class="button delete-btn">Delete</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 </html>

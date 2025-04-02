@@ -5,7 +5,8 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from backend.models.inventory_item import Inventory_Item
 from sqlalchemy.orm import Session
-
+from werkzeug.utils import secure_filename
+import os
 def get_dashboard_stats_for_org(organization_id):
     total_items = db.session.query(func.count(Inventory_Item.id)).filter_by(
         organization_id=organization_id
@@ -56,11 +57,12 @@ def add_inventory_item_to_db(item_data, user):
         )
         db.session.add(new_item)
         db.session.commit()
-        return True
+        return new_item  # return the full item
     except Exception as e:
         print("Inventory DB Insert Error:", e)
         db.session.rollback()
-        return False
+        return None
+
 
 def update_item_quantity(db: Session, item_id: int, change: int):
     item = db.query(Inventory_Item).filter(Inventory_Item.item_id == item_id).first()
@@ -86,3 +88,30 @@ def update_item_quantity(db: Session, item_id: int, change: int):
 def get_items_for_org(organization_id):
     return Inventory_Item.query.filter_by(organization_id=organization_id).all()
 
+
+def save_inventory_image(item_id, image_file):
+    try:
+        item = Inventory_Item.query.get(item_id)
+        if not item:
+            return False, "Item not found"
+
+        filename = secure_filename(image_file.filename)
+
+        # Use the correct upload folder from config
+        from config import Config
+        upload_dir = Config.UPLOAD_FOLDER
+        os.makedirs(upload_dir, exist_ok=True)
+
+        filepath = os.path.join(upload_dir, filename)
+        image_file.save(filepath)
+
+        # The URL path (what the browser needs) should point to /static/
+        relative_url = f"/static/image_uploads/{filename}"
+        item.image_path = relative_url
+
+        db.session.commit()
+
+        return True, relative_url
+    except Exception as e:
+        db.session.rollback()
+        return False, f"Error saving image: {str(e)}"

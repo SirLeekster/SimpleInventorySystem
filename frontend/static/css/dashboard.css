@@ -348,3 +348,67 @@ section {
 .hidden {
   display: none;
 }
+
+.image-placeholder {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8em;
+  color: #aaa;
+  border-radius: 4px;
+}
+
+.image-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.custom-file-input {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.custom-file-input input[type="file"] {
+  width: 100%;
+  height: 40px;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.custom-file-input .custom-file-label {
+  display: block;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+  color: #555;
+  text-align: left;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-file-input .custom-file-label:hover {
+  background-color: #f4f4f4;
+}
+
+.inventory-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+

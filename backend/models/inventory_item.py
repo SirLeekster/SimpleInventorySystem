@@ -11,6 +11,8 @@ class Inventory_Item(db.Model):
     price = db.Column(db.Numeric(10, 2), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
 
+    image_path = db.Column(db.Text, nullable=True)  # <- NEW FIELD
+
     created_by = db.Column(db.BigInteger, db.ForeignKey('users.user_id', ondelete='SET NULL'), nullable=True)
     organization_id = db.Column(db.Integer, db.ForeignKey('organizations.organization_id', ondelete='CASCADE'), nullable=False)
 

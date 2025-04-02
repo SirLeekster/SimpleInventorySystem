@@ -56,15 +56,37 @@ def create_inventory_item():
         return jsonify({"message": "User not found"}), 404
 
     result = inventory_service.add_inventory_item_to_db(item_data, user)
-    if result:
-        return jsonify({"message": "Inventory item created successfully"}), 201
+    if result and isinstance(result, Inventory_Item):
+        return jsonify({
+            "message": "Inventory item created successfully",
+            "item_id": result.id  # <-- required!
+        }), 201
     print("Inventory creation failed with data:", item_data)
     return jsonify({"message": "Failed to create inventory item"}), 400
 
 
-# ========================
-# ROUTES FOR API
-# ========================
+
+@api_routes.route('/api/upload_inventory_image/<int:item_id>', methods=['POST'])
+def upload_inventory_image(item_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    if 'image' not in request.files:
+        return jsonify({"message": "No image provided"}), 400
+
+    image = request.files['image']
+
+    from backend.services.inventory_service import save_inventory_image
+    success, result = save_inventory_image(item_id, image)
+    print(f"Image upload result: {result} + {item_id}")
+
+    if success:
+        return jsonify({"message": "Image uploaded successfully", "image_path": result}), 200
+    else:
+        return jsonify({"message": result}), 400
+
+
+
 @api_routes.route('/api/update_inventory_quantity/<int:item_id>', methods=['PUT'])
 def update_inventory_quantity(item_id):
     if 'user_id' not in session:
@@ -110,7 +132,8 @@ def get_inventory_items():
             "description": item.description,
             "category": item.category,
             "quantity": item.quantity,
-            "price": str(item.price)
+            "price": str(item.price),
+            "image_path": item.image_path or ""
         }
         for item in items
     ]
