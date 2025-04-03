@@ -42,31 +42,15 @@ CREATE TABLE IF NOT EXISTS inventory (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    image_path TEXT DEFAULT NULL,
     created_by BIGINT,
     organization_id INT,
-
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-        ON DELETE SET NULL,
-    FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
-        ON DELETE CASCADE
+    FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
+
 
 CREATE INDEX idx_inventory_org ON inventory (organization_id);
 CREATE INDEX idx_email ON users(email);
 CREATE INDEX idx_inventory_creator ON inventory(created_by);
-
-
--- Insert initial organization(s)
-INSERT INTO organizations (organization_name) VALUES
-('Default Org');
-
--- Insert users (using organization_id from above insert)
-INSERT INTO users (username, email, password_hash, organization_id) VALUES
-('admin', 'admin@example.com', 'sample_hash_1', 1),
-('testuser', 'test@example.com', 'sample_hash_2', 1);
-
--- Insert sample inventory data
-INSERT INTO inventory (product_name, description, category, quantity, price, created_by, organization_id) VALUES
-('Laptop', '15-inch, 16GB RAM', 'Electronics', 10, 899.99, 1, 1),
-('Mouse', 'Wireless USB Mouse', 'Accessories', 20, 19.99, 2, 1);
 
