@@ -207,6 +207,15 @@ function setupFormHandlers() {
         });
     }
 
+    const editImageInput = document.getElementById('editImage');
+    if (editImageInput) {
+        editImageInput.addEventListener('change', function () {
+            const fileName = this.files[0] ? this.files[0].name : 'Choose Image';
+            this.nextElementSibling.textContent = fileName;
+        });
+    }
+
+
     // Handle edit inventory form submission
     const editInventoryForm = document.getElementById("editInventoryForm");
     if (editInventoryForm) {
@@ -250,7 +259,32 @@ function setupFormHandlers() {
                 }
 
                 const result = await response.json();
-                alert(result.message);
+                alert(result.message)
+
+                const imageInput = document.getElementById("editImage");
+                if (imageInput && imageInput.files.length > 0) {
+                    const imageFormData = new FormData();
+                    imageFormData.append("image", imageInput.files[0]);
+
+                    try {
+                        console.log("Uploading updated image...");
+                        const imageResponse = await fetch(`/api/upload_inventory_image/${itemId}`, {
+                            method: "POST",
+                            body: imageFormData
+                        });
+
+                        const imageResult = await imageResponse.json();
+                        if (!imageResponse.ok) {
+                            console.error("Image upload error:", imageResult.message);
+                        } else {
+                            console.log("Image updated successfully.");
+                        }
+                    } catch (imageError) {
+                        console.error("Error uploading image:", imageError);
+                    }
+                }
+
+
                 loadInventoryTable(); // Reload the table
                 loadDashboardStats(); // Update stats after editing item
                 document.getElementById("editModal").classList.add("hidden"); // Close modal
