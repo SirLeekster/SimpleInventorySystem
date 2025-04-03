@@ -188,6 +188,7 @@ function setupFormHandlers() {
 
                     // NOW reset the form
                     addInventoryForm.reset();
+                    document.querySelector(".custom-file-label").textContent = "Choose Image";
                     loadDashboardStats();
                 } else {
                     alert("Error: " + result.message);
@@ -296,6 +297,40 @@ function setupFormHandlers() {
     } else {
         console.error("Edit form not found");
     }
+
+    const upcBtn = document.getElementById("upcLookupBtn");
+if (upcBtn) {
+    upcBtn.addEventListener("click", async function () {
+        const upc = document.getElementById("upc").value.trim();
+        if (!upc) {
+            alert("Please enter a UPC.");
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/upc_lookup?upc=${encodeURIComponent(upc)}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert(data.message || "UPC lookup failed.");
+                return;
+            }
+
+            // Fill out the form fields
+            document.getElementById("productName").value = data.product_name || '';
+            document.getElementById("description").value = data.description || '';
+            document.getElementById("category").value = data.category || 'General';
+            document.getElementById("price").value = data.price || '';
+
+            alert("Fields auto-filled from UPC.");
+        } catch (err) {
+            console.error("UPC fetch error:", err);
+            alert("An error occurred while looking up the UPC.");
+        }
+    });
+}
+
+
 }
 
 // Function to set up modal event handlers
@@ -376,7 +411,7 @@ function loadInventoryTable() {
                     : `<div class="image-placeholder">No Image</div>`}
                 </td>
                 <td>${item.product_name}</td>
-                <td>${item.description || ""}</td>
+                <td title="${item.description || ''}">${item.description || ''}</td>
                 <td>${item.category}</td>
                 <td>${item.quantity}</td>
                 <td>$${parseFloat(item.price).toFixed(2)}</td>
@@ -416,13 +451,16 @@ function handleEditButtonClick(e) {
 
         const cells = row.children;
 
-        // Pre-fill modal fields with the selected item data
+        // Fix cell mapping: image = 0, name = 1, desc = 2, category = 3, qty = 4, price = 5
         document.getElementById("editItemId").value = e.target.dataset.id;
-        document.getElementById("editName").value = cells[0].textContent.trim();
-        document.getElementById("editDescription").value = cells[1].textContent.trim();
-        document.getElementById("editCategory").value = cells[2].textContent.trim();
-        document.getElementById("editQuantity").value = parseInt(cells[3].textContent.trim());
-        document.getElementById("editPrice").value = parseFloat(cells[4].textContent.trim().replace("$", ""));
+        document.getElementById("editName").value = cells[1].textContent.trim();
+        document.getElementById("editDescription").value = cells[2].textContent.trim();
+        document.getElementById("editCategory").value = cells[3].textContent.trim();
+        document.getElementById("editQuantity").value = parseInt(cells[4].textContent.trim());
+
+        // ✅ Safely parse the price field
+        const rawPrice = cells[5].textContent.trim().replace("$", "");
+        document.getElementById("editPrice").value = isNaN(rawPrice) ? "" : parseFloat(rawPrice);
 
         // Show the modal
         const modal = document.getElementById("editModal");

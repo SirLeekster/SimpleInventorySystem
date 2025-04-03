@@ -63,10 +63,17 @@
                 </div>
             </div>
         </section>
-        
+
         <section id="addInventoryItem" class="content-section hidden">
             <h2>Add Inventory Item</h2>
             <form id="addInventoryForm">
+
+                <label for="upc">UPC Autofill (optional)</label>
+                <div class="upc-row">
+                    <input type="text" id="upc" placeholder="Enter Universal Product Code" style="flex: 1;">
+                    <button type="button" id="upcLookupBtn" class="button small">Auto-Fill</button>
+                </div>
+
                 <label for="productName">Item Name:</label>
                 <input type="text" id="productName" required>
 

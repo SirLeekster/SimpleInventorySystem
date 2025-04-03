@@ -42,6 +42,35 @@ def login():
 # INVENTORY ROUTES
 # ========================
 
+
+@api_routes.route('/api/upc_lookup', methods=['GET'])
+def upc_lookup():
+    upc = request.args.get('upc')
+    if not upc:
+        return jsonify({"message": "UPC is required"}), 400
+
+    try:
+        import requests
+        response = requests.get(f"https://api.upcitemdb.com/prod/trial/lookup?upc={upc}")
+        data = response.json()
+
+        if response.status_code != 200 or not data.get("items"):
+            return jsonify({"message": "No data found for that UPC"}), 404
+
+        item = data["items"][0]
+        return jsonify({
+            "product_name": item.get("title", ""),
+            "description": item.get("description", ""),
+            "category": item.get("category", ""),
+            "price": item.get("lowest_recorded_price", "")
+        }), 200
+
+
+    except Exception as e:
+        return jsonify({"message": f"Error during UPC lookup: {str(e)}"}), 500
+
+
+
 @api_routes.route('/api/create_inventory_item', methods=['POST'])
 def create_inventory_item():
     if 'user_id' not in session:

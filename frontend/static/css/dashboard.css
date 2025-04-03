@@ -411,4 +411,37 @@ section {
     border-radius: 4px;
 }
 
+.upc-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  max-width: 400px;
+  margin-bottom: 15px;
+}
+
+.upc-row .button.small {
+  height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  display: flex;
+  align-items: center;
+  margin-top: -10px;
+}
+
+
+.inventory-table td:nth-child(3) {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inventory-table td:nth-child(3):hover {
+  cursor: help;
+}
+
+
+
+
+
 
