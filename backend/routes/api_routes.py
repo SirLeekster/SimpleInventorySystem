@@ -215,6 +215,148 @@ def delete_inventory_item(item_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to delete item: {str(e)}"}), 500
 
+@api_routes.route('/api/add_sku_to_inventory_item/<int:item_id>', methods=['POST'])
+def add_sku_to_inventory_item(item_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "Missing JSON data"}), 400
+
+    required_fields = ['sku_code']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"message": f"Missing field: {field}"}), 400
+
+    from backend.models.inventory_sku import InventorySKU
+
+    new_sku = InventorySKU(
+        inventory_id=item_id,
+        sku_code=data['sku_code'],
+        serial_number=data.get('serial_number'),
+        status=data.get('status', 'in_stock'),
+        expiration_date=data.get('expiration_date')
+    )
+
+    try:
+        db.session.add(new_sku)
+        db.session.commit()
+        return jsonify({"message": "SKU added successfully", "sku_id": new_sku.sku_id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Failed to add SKU: {str(e)}"}), 500
+
+
+
+@api_routes.route('/api/inventory_item_skus/<int:item_id>', methods=['GET'])
+def fetch_skus_for_item(item_id):
+    from backend.models.inventory_sku import InventorySKU
+    try:
+        skus = InventorySKU.query.filter_by(inventory_id=item_id).all()
+
+        data = []
+        for sku in skus:
+            data.append({
+                "sku_id": sku.sku_id,
+                "sku_code": sku.sku_code,
+                "serial_number": sku.serial_number,
+                "status": sku.status,
+                "expiration_date": sku.expiration_date.isoformat() if sku.expiration_date else None
+            })
+
+        return jsonify(data), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'message': 'Error fetching SKUs', 'error': str(e)}), 500
+
+
+@api_routes.route('/api/update_sku/<int:sku_id>', methods=['PATCH'])
+def update_sku(sku_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    from backend.models.inventory_sku import InventorySKU
+
+    sku = InventorySKU.query.get(sku_id)
+    if not sku:
+        return jsonify({"message": "SKU not found"}), 404
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "Missing JSON data"}), 400
+
+    sku.sku_code = data.get("sku_code", sku.sku_code)
+    sku.serial_number = data.get("serial_number", sku.serial_number)
+    sku.status = data.get("status", sku.status)
+    sku.expiration_date = data.get("expiration_date", sku.expiration_date)
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "SKU updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Failed to update SKU: {str(e)}"}), 500
+
+
+@api_routes.route('/api/delete_sku/<int:sku_id>', methods=['DELETE'])
+def delete_sku(sku_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    from backend.models.inventory_sku import InventorySKU
+
+    sku = InventorySKU.query.get(sku_id)
+    if not sku:
+        return jsonify({"message": "SKU not found"}), 404
+
+    try:
+        db.session.delete(sku)
+        db.session.commit()
+        return jsonify({"message": "SKU deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Failed to delete SKU: {str(e)}"}), 500
+
+@api_routes.route('/api/generate_skus/<int:item_id>', methods=['POST'])
+def generate_skus(item_id):
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    from backend.models.inventory_sku import InventorySKU
+    from backend.models.inventory_item import Inventory_Item
+
+    try:
+        # Get the target inventory item
+        item = Inventory_Item.query.get(item_id)
+        if not item:
+            return jsonify({"message": "Item not found"}), 404
+
+        desired_count = item.quantity
+        current_count = InventorySKU.query.filter_by(inventory_id=item_id).count()
+        missing_count = desired_count - current_count
+
+        if missing_count <= 0:
+            return jsonify({"message": "No new SKUs needed. Already at or above quantity."}), 200
+
+        # Generate only the missing SKUs
+        for i in range(current_count + 1, desired_count + 1):
+            sku = InventorySKU(
+                inventory_id=item_id,
+                sku_code=f"AUTO-SKU-{item_id}-{i}",
+                status="in_stock"
+            )
+            db.session.add(sku)
+
+        db.session.commit()
+        return jsonify({"message": f"{missing_count} new SKUs generated."}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Failed to generate SKUs: {str(e)}"}), 500
+
 
 # ========================
 # DASHBOARD ROUTES

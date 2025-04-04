@@ -49,8 +49,25 @@ CREATE TABLE IF NOT EXISTS inventory (
     FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS inventory_skus (
+    sku_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    inventory_id INTEGER NOT NULL,
+    sku_code VARCHAR(100) NOT NULL UNIQUE,
+    serial_number VARCHAR(100) DEFAULT NULL,
+    status VARCHAR(50) DEFAULT 'in_stock', -- e.g., in_stock, sold, damaged, etc.
+    expiration_date DATE DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (inventory_id) REFERENCES inventory(id)
+        ON DELETE CASCADE
+);
+
+
+
+
 
 CREATE INDEX idx_inventory_org ON inventory (organization_id);
 CREATE INDEX idx_email ON users(email);
 CREATE INDEX idx_inventory_creator ON inventory(created_by);
+CREATE INDEX idx_inventory_skus_item ON inventory_skus (inventory_id);
 

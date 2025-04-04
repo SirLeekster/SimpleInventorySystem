@@ -145,16 +145,17 @@ section {
   display: none; /* Hide the modal by default */
 }
 
-/* Modal Content Box */
 .modal-content {
   background: white;
   padding: 30px;
-  width: 400px;
+  width: 66%;
+  max-width: 880px;
   border-radius: 8px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  max-height: 80vh; /* Prevent modal from getting too tall */
-  overflow-y: auto; /* Allow scroll if content is too long */
+  max-height: 80vh;
+  overflow-y: auto;
 }
+
 
 /* Heading style inside modal */
 .modal-content h3 {
@@ -438,6 +439,51 @@ section {
 
 .inventory-table td:nth-child(3):hover {
   cursor: help;
+}
+
+/* SKU Form Styling */
+.sku-form {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #ccc;
+}
+
+.sku-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.sku-form input,
+.sku-form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    box-sizing: border-box;
+}
+
+.sku-form button {
+    margin-top: 12px;
+}
+
+
+.sku-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.sku-bulk-actions {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+
+.sku-btn {
+  margin-top: 15px;
 }
 
 

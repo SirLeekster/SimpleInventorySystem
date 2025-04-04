@@ -1,12 +1,14 @@
 from backend.database import db
 from backend.models.inventory_item import Inventory_Item
+from backend.models.inventory_sku import InventorySKU
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from fastapi import HTTPException
-from backend.models.inventory_item import Inventory_Item
 from sqlalchemy.orm import Session
 from werkzeug.utils import secure_filename
 import os
+
+
 def get_dashboard_stats_for_org(organization_id):
     total_items = db.session.query(func.count(Inventory_Item.id)).filter_by(
         organization_id=organization_id
@@ -115,3 +117,8 @@ def save_inventory_image(item_id, image_file):
     except Exception as e:
         db.session.rollback()
         return False, f"Error saving image: {str(e)}"
+
+
+def get_skus_by_inventory_item(item_id):
+    skus = InventorySKU.query.filter_by(inventory_id=item_id).all()
+    return [sku.to_dict() for sku in skus]
