@@ -6,36 +6,59 @@ export function initManageItems() {
     loadInventoryTable();
 }
 
+document.getElementById("inventorySearch").addEventListener("input", function () {
+    const searchTerm = this.value.toLowerCase();
+
+    const filteredItems = allInventoryItems.filter(item => {
+        return (
+            item.product_name.toLowerCase().includes(searchTerm) ||
+            (item.description || "").toLowerCase().includes(searchTerm) ||
+            item.category.toLowerCase().includes(searchTerm)
+        );
+    });
+
+    renderInventoryTable(filteredItems);
+});
+
+
 // Load inventory into table
+let allInventoryItems = [];
+
 function loadInventoryTable() {
     fetch("/api/inventory_items")
         .then(res => res.json())
         .then(items => {
-            const tableBody = document.getElementById("inventoryTableBody");
-            tableBody.innerHTML = "";
-
-            items.forEach(item => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${item.image_path ? `<img src="${item.image_path}" class="inventory-thumbnail">` : `<div class="image-placeholder">No Image</div>`}</td>
-                    <td>${item.product_name}</td>
-                    <td>${item.description || ""}</td>
-                    <td>${item.category}</td>
-                    <td>${item.quantity}</td>
-                    <td>$${parseFloat(item.price).toFixed(2)}</td>
-                    <td>
-                        <button class="edit-btn" data-id="${item.id}">✏️ Edit</button>
-                        <button class="sku-btn" data-id="${item.id}" data-quantity="${item.quantity}">📦 SKUs</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
+            allInventoryItems = items;
+            renderInventoryTable(items);
             setupEditButtonHandlers();
             setupSkuButtonHandlers();
         })
         .catch(err => console.error("Error fetching inventory items:", err));
 }
+
+function renderInventoryTable(items) {
+    const tableBody = document.getElementById("inventoryTableBody");
+    tableBody.innerHTML = "";
+
+    items.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${item.image_path ? `<img src="${item.image_path}" class="inventory-thumbnail">` : `<div class="image-placeholder">No Image</div>`}</td>
+            <td>${item.product_name}</td>
+            <td>${item.description || ""}</td>
+            <td>${item.category}</td>
+            <td>${item.quantity}</td>
+            <td>$${parseFloat(item.price).toFixed(2)}</td>
+            <td>
+                <button class="edit-btn" data-id="${item.id}">✏️ Edit</button>
+                <button class="sku-btn" data-id="${item.id}" data-quantity="${item.quantity}">📦 SKUs</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
 
 function setupEditButtonHandlers() {
     document.getElementById("inventoryTableBody").addEventListener("click", handleEditButtonClick);
@@ -140,6 +163,11 @@ function loadSkuList(itemId, quantity) {
             container.innerHTML = "<p>Error loading SKUs.</p>";
         });
 }
+
+// ======= CANCEL Edit =======
+document.getElementById("cancelEdit").addEventListener("click", () => {
+    document.getElementById("editModal").classList.add("hidden");
+});
 
 document.getElementById("closeSkuModal").addEventListener("click", () => {
     document.getElementById("skuModal").classList.add("hidden");
@@ -303,6 +331,11 @@ document.getElementById("deleteItem").addEventListener("click", async function (
     }
 });
 
+// ======= CANCEL Edit =======
+document.getElementById("cancelEdit").addEventListener("click", () => {
+    document.getElementById("editModal").classList.add("hidden");
+});
+
 // ======= SAVE ALL SKUs =======
 document.getElementById("saveAllSkusBtn").addEventListener("click", async function () {
     const itemId = document.getElementById("skuModal").dataset.itemId;
@@ -377,4 +410,7 @@ document.getElementById("deleteAllSkusBtn").addEventListener("click", async func
         alert("Failed to delete all SKUs.");
     }
 });
+
+
+
 

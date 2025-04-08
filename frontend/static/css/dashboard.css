@@ -487,6 +487,15 @@ section {
 }
 
 
+.search-row {
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
 
 
 
