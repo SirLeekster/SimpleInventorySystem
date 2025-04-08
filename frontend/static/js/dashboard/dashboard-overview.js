@@ -4,6 +4,7 @@
 
 export function initOverview() {
     loadDashboardStats();
+    loadActivityLog();
 }
 
 function loadDashboardStats() {
@@ -26,3 +27,48 @@ function loadDashboardStats() {
             console.warn("Failed to load dashboard stats:", error);
         });
 }
+
+function loadActivityLog() {
+    fetch('/api/logs/recent')
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById('activity-log');
+            list.innerHTML = '';
+
+            if (!data.logs || data.logs.length === 0) {
+                list.innerHTML = '<li class="log-item text-muted">No recent activity.</li>';
+                return;
+            }
+
+            data.logs.forEach(log => {
+                const timestamp = new Date(log.timestamp).toLocaleString();
+                const user = log.username || 'Unknown User';
+                const emoji = getActionEmoji(log.action);
+
+                const item = document.createElement('li');
+                item.className = 'log-item';
+                item.textContent = `${emoji} | User: ${user} | Action: ${log.action} | Performed at ${timestamp}`;
+
+
+
+                list.appendChild(item);
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load activity log:', err);
+            document.getElementById('activity-log').innerHTML =
+                '<li class="log-item text-danger">Error loading logs.</li>';
+        });
+}
+
+function getActionEmoji(action) {
+    if (/added/i.test(action)) return '✅';
+    if (/edited/i.test(action)) return '✏️';
+    if (/deleted/i.test(action)) return '❌';
+    if (/upload/i.test(action)) return '🖼️';
+    if (/generate/i.test(action)) return '⚙️';
+    return '🔹';
+}
+
+
+

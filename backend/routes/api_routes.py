@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify, session
 from backend.services import user_service, inventory_service
 from backend.models.user import User
-from backend.models.inventory_item import Inventory_Item 
+from backend.models.inventory_item import Inventory_Item
+from backend.services import log_service
 from backend.database import db 
 
 api_routes = Blueprint('api_routes', __name__)
@@ -86,13 +87,14 @@ def create_inventory_item():
 
     result = inventory_service.add_inventory_item_to_db(item_data, user)
     if result and isinstance(result, Inventory_Item):
+        log_service.log_user_action(user.user_id, f"Created item ID {result.id} - {result.product_name}")
         return jsonify({
             "message": "Inventory item created successfully",
-            "item_id": result.id  # <-- required!
+            "item_id": result.id
         }), 201
+
     print("Inventory creation failed with data:", item_data)
     return jsonify({"message": "Failed to create inventory item"}), 400
-
 
 
 @api_routes.route('/api/upload_inventory_image/<int:item_id>', methods=['POST'])
@@ -110,6 +112,7 @@ def upload_inventory_image(item_id):
     print(f"Image upload result: {result} + {item_id}")
 
     if success:
+        log_service.log_user_action(session['user_id'], f"Uploaded image for item ID {item_id}")
         return jsonify({"message": "Image uploaded successfully", "image_path": result}), 200
     else:
         return jsonify({"message": result}), 400
@@ -129,6 +132,8 @@ def update_inventory_quantity(item_id):
 
     try:
         updated_item = inventory_service.update_item_quantity(item_id, change)
+        log_service.log_user_action(session['user_id'],
+            f"Updated quantity of item ID {item_id} to {updated_item.quantity}")
         return jsonify({
             "message": "Item quantity updated successfully",
             "item_id": updated_item.item_id,
@@ -192,6 +197,7 @@ def update_inventory_item(item_id):
 
     try:
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Edited item ID {item_id} - {item.product_name}")
         return jsonify({"message": "Item updated successfully"}), 200
     except Exception as e:
         db.session.rollback()
@@ -210,6 +216,7 @@ def delete_inventory_item(item_id):
     try:
         db.session.delete(item)
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Deleted item ID {item_id} - {item.product_name}")
         return jsonify({"message": "Item deleted successfully"}), 200
     except Exception as e:
         db.session.rollback()
@@ -242,6 +249,7 @@ def add_sku_to_inventory_item(item_id):
     try:
         db.session.add(new_sku)
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Added SKU {new_sku.sku_code} to item ID {item_id}")
         return jsonify({"message": "SKU added successfully", "sku_id": new_sku.sku_id}), 201
     except Exception as e:
         db.session.rollback()
@@ -295,6 +303,7 @@ def update_sku(sku_id):
 
     try:
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Edited SKU ID {sku_id} - {sku.sku_code}")
         return jsonify({"message": "SKU updated successfully"}), 200
     except Exception as e:
         db.session.rollback()
@@ -315,6 +324,7 @@ def delete_sku(sku_id):
     try:
         db.session.delete(sku)
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Deleted SKU ID {sku_id} - {sku.sku_code}")
         return jsonify({"message": "SKU deleted successfully"}), 200
     except Exception as e:
         db.session.rollback()
@@ -351,6 +361,7 @@ def generate_skus(item_id):
             db.session.add(sku)
 
         db.session.commit()
+        log_service.log_user_action(session['user_id'], f"Auto-generated {missing_count} SKUs for item ID {item_id}")
         return jsonify({"message": f"{missing_count} new SKUs generated."}), 201
 
     except Exception as e:
@@ -538,3 +549,16 @@ def reset_admin_password():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
+
+
+@api_routes.route('/api/logs/recent', methods=['GET'])
+def get_recent_logs():
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    user = user_service.get_user_by_id(session['user_id'])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    logs = log_service.get_recent_logs_for_org(user.organization_id)
+    return jsonify({'logs': logs}), 200
