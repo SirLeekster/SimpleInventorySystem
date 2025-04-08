@@ -45,7 +45,7 @@ function renderInventoryTable(items) {
         row.innerHTML = `
             <td>${item.image_path ? `<img src="${item.image_path}" class="inventory-thumbnail">` : `<div class="image-placeholder">No Image</div>`}</td>
             <td>${item.product_name}</td>
-            <td>${item.description || ""}</td>
+            <td title="${item.description || ''}">${item.description || ""}</td>
             <td>${item.category}</td>
             <td>${item.quantity}</td>
             <td>$${parseFloat(item.price).toFixed(2)}</td>
@@ -57,6 +57,7 @@ function renderInventoryTable(items) {
         tableBody.appendChild(row);
     });
 }
+
 
 
 

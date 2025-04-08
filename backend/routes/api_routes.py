@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify, session
 from backend.services import user_service, inventory_service
 from backend.models.user import User
-from backend.models.inventory_item import Inventory_Item 
-from backend.database import db 
+from backend.models.inventory_item import Inventory_Item
+from backend.database import db
 
 api_routes = Blueprint('api_routes', __name__)
 
@@ -279,6 +279,8 @@ def update_sku(sku_id):
         return jsonify({"message": "Not authenticated"}), 401
 
     from backend.models.inventory_sku import InventorySKU
+    from backend.models.inventory_item import Inventory_Item
+    from backend.models.Sale import Sale  # ✅ make sure this is correct
 
     sku = InventorySKU.query.get(sku_id)
     if not sku:
@@ -288,17 +290,42 @@ def update_sku(sku_id):
     if not data:
         return jsonify({"message": "Missing JSON data"}), 400
 
+    original_status = sku.status
+    new_status = data.get("status", sku.status)
+
     sku.sku_code = data.get("sku_code", sku.sku_code)
     sku.serial_number = data.get("serial_number", sku.serial_number)
-    sku.status = data.get("status", sku.status)
+    sku.status = new_status
     sku.expiration_date = data.get("expiration_date", sku.expiration_date)
 
     try:
+        # If status changed to sold, prepare to insert Sale before committing anything
+        if original_status != "sold" and new_status == "sold":
+            print(f"💡 SKU {sku_id} changed to SOLD — logging sale...")
+            item = Inventory_Item.query.get(sku.inventory_id)
+            if not item:
+                return jsonify({"message": "Item not found for SKU"}), 404
+
+            new_sale = Sale(
+                inventory_id=item.id,
+                sku_id=sku.sku_id,  # ✅ track specific SKU sold
+                organization_id=item.organization_id,
+                price=item.price
+            )
+            db.session.add(new_sale)
+
+        # Final commit (SKU + Sale together)
         db.session.commit()
-        return jsonify({"message": "SKU updated successfully"}), 200
+
+        if original_status != "sold" and new_status == "sold":
+            return jsonify({"message": "SKU updated and sale recorded"}), 200
+        else:
+            return jsonify({"message": "SKU updated successfully"}), 200
+
     except Exception as e:
         db.session.rollback()
-        return jsonify({"message": f"Failed to update SKU: {str(e)}"}), 500
+        print("🔥 SKU update error:", str(e))
+        return jsonify({"message": f"Failed to update SKU or log sale: {str(e)}"}), 500
 
 
 @api_routes.route('/api/delete_sku/<int:sku_id>', methods=['DELETE'])
@@ -538,3 +565,22 @@ def reset_admin_password():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Error: {str(e)}"}), 500
+
+
+# ========================
+# Reports ROUTES
+# ========================
+@api_routes.route("/api/sales_report", methods=['GET'])
+def get_sales_report():
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    user = user_service.get_user_by_id(session['user_id'])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    from backend.services import report_service
+    date_range = request.args.get("range", "7d")  # default to last 7 days
+    report_data = report_service.get_sales_report_for_org(user.organization_id, date_range)
+
+    return jsonify(report_data), 200
