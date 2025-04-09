@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         // Gather form input values
+        const full_name = document.getElementById("full_name").value.trim();
         const username = document.getElementById("username").value.trim();
         const email = document.getElementById("email").value.trim();
         const orgChoice = document.getElementById("orgChoice").value;
@@ -60,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Assemble full user data payload
         const userData = {
+            full_name: full_name,
             username: username,
             email: email,
             password: password,

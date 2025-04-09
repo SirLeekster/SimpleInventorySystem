@@ -5,6 +5,7 @@ import werkzeug.security
 
 def add_user_to_db(user_data):
     try:
+        full_name = user_data.get('full_name')
         username = user_data.get("username")
         email = user_data.get("email")
         password = user_data.get("password")
@@ -23,6 +24,7 @@ def add_user_to_db(user_data):
 
         # Create user without org_id yet
         new_user = User(
+            full_name=full_name,
             username=username,
             email=email,
             password_hash=werkzeug.security.generate_password_hash(password),
