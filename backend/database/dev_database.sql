@@ -63,6 +63,16 @@ CREATE TABLE IF NOT EXISTS inventory_skus (
         ON DELETE CASCADE
 );
 
+CREATE TABLE sales (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    inventory_id INTEGER NOT NULL,
+    sku_id BIGINT NOT NULL,  -- ✅ Add this
+    organization_id INTEGER NOT NULL,
+    price REAL NOT NULL,
+    sold_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (inventory_id) REFERENCES inventory(id),
+    FOREIGN KEY (sku_id) REFERENCES inventory_skus(sku_id)
+);
 
 
 CREATE INDEX idx_email ON users(email);
