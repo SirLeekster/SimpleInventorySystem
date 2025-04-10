@@ -4,6 +4,7 @@ USE simpleinventorysystem;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) NOT NULL,
     username VARCHAR(150) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -64,10 +65,20 @@ CREATE TABLE IF NOT EXISTS inventory_skus (
 
 
 
-
-
-CREATE INDEX idx_inventory_org ON inventory (organization_id);
 CREATE INDEX idx_email ON users(email);
-CREATE INDEX idx_inventory_creator ON inventory(created_by);
-CREATE INDEX idx_inventory_skus_item ON inventory_skus (inventory_id);
+CREATE INDEX idx_users_username ON users(username);
+CREATE INDEX idx_users_org_id ON users(organization_id);
 
+CREATE INDEX idx_organizations_creator ON organizations(created_by);
+
+CREATE INDEX idx_user_logs_user_id ON user_logs(user_id);
+CREATE INDEX idx_user_logs_timestamp ON user_logs(timestamp);
+
+CREATE INDEX idx_inventory_org ON inventory(organization_id);
+CREATE INDEX idx_inventory_creator ON inventory(created_by);
+CREATE INDEX idx_inventory_category ON inventory(category);
+CREATE INDEX idx_inventory_name ON inventory(product_name(100));
+
+CREATE INDEX idx_inventory_skus_item ON inventory_skus(inventory_id);
+CREATE INDEX idx_inventory_skus_status ON inventory_skus(status);
+CREATE INDEX idx_inventory_skus_expiration ON inventory_skus(expiration_date);

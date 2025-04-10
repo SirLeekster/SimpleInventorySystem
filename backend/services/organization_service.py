@@ -1,4 +1,6 @@
 from backend.models.organization import Organization
+from backend.models.user import User
+from backend.models.user_log import UserLog
 
 def organization_exists(name: str) -> bool:
     # Check if an organization with the given name exists.
@@ -20,4 +22,10 @@ def create_organization(name: str, created_by: int) -> Organization:
     db.session.commit()
     return org
 
+def get_users_for_org(organization_id: int) -> list[User]:
+    # Return a list of users that belong to the organization.
+    return User.query.filter_by(organization_id=organization_id).all()
 
+def get_all_logs_for_org(organization_id: int) -> list[UserLog]:
+    # Return all logs for users that belong to the organization.
+    return UserLog.query.join(User).filter(User.organization_id == organization_id).order_by(UserLog.timestamp.desc()).all()

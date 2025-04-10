@@ -34,14 +34,28 @@
 
             <div class="stats-group">
                 <div class="stats-row">
-                    <div class="stat-item"><h3>Total Items</h3><p id="totalItems">0</p></div>
-                    <div class="stat-item"><h3>Low Stock Items</h3><p id="lowStockItems">0</p></div>
-                    <div class="stat-item"><h3>Out of Stock</h3><p id="outOfStockItems">0</p></div>
+                    <div class="stat-item"><h3>Total Items</h3>
+                        <p id="totalItems">0</p></div>
+                    <div class="stat-item"><h3>Low Stock Items</h3>
+                        <p id="lowStockItems">0</p></div>
+                    <div class="stat-item"><h3>Out of Stock</h3>
+                        <p id="outOfStockItems">0</p></div>
                 </div>
                 <div class="stats-row">
-                    <div class="stat-item"><h3>Total Sales</h3><p id="totalSales">$0.00</p></div>
-                    <div class="stat-item"><h3>Most Stocked Item</h3><p id="topItem">N/A</p></div>
-                    <div class="stat-item"><h3>Recent Additions</h3><p id="recentItems">0 this week</p></div>
+                    <div class="stat-item"><h3>Total Sales</h3>
+                        <p id="totalSales">$0.00</p></div>
+                    <div class="stat-item"><h3>Most Stocked Item</h3>
+                        <p id="topItem">N/A</p></div>
+                    <div class="stat-item"><h3>Recent Additions</h3>
+                        <p id="recentItems">0 this week</p></div>
+                </div>
+            </div>
+
+            <!-- Live Activity Log -->
+            <div class="activity-log-container">
+                <div class="activity-log-header">Recent Activity</div>
+                <div id="activity-log" class="activity-log-scroll">
+                    <div class="log-item">Loading...</div>
                 </div>
             </div>
         </section>
@@ -88,14 +102,14 @@
             <div id="itemsTable">
                 <table class="inventory-table">
                     <thead>
-                        <tr>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Category</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                        </tr>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
                     </thead>
                     <tbody id="inventoryTableBody"></tbody>
                 </table>
@@ -116,6 +130,7 @@
                     <h3>Profile Information</h3>
                     <button id="editProfileBtn" class="button">Edit Profile</button>
                 </div>
+
                 <div id="profileDisplay" class="profile-card">
                     <div class="profile-field">
                         <span class="field-label">Username:</span>
@@ -174,8 +189,59 @@
                         </div>
                     </form>
                 </div>
+                <!-- Organization Users -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3>Users in Your Organization</h3>
+                        <input type="text" id="orgUserSearch" class="card-search" placeholder="Search users...">
+                    </div>
+                    <div id="orgUsersTable" class="activity-log-scroll"
+                         style="max-height: 250px; overflow-y: auto; overflow-x: auto;">
+                        <table class="logs-table" id="orgUsers-inner">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Joined</th>
+                            </tr>
+                            </thead>
+                            <tbody id="orgUsersTableBody">
+                            <tr>
+                                <td colspan="3">Loading users...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Organization Activity Logs -->
+                <div class="profile-card">
+                    <div class="card-header">
+                        <h3>Organization Activity Logs</h3>
+                        <input type="text" id="logSearchInput" class="card-search" placeholder="Search logs...">
+                    </div>
+                    <div id="fullOrgLogs" class="activity-log-scroll">
+                        <table class="logs-table" id="fullOrgLogs-inner">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Timestamp</th>
+                            </tr>
+                            </thead>
+                            <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="3">Loading logs...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
             </div>
         </section>
+
     </main>
 </div>
 
@@ -213,45 +279,43 @@
 
 <!-- SKU Modal -->
 <div id="skuModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>SKUs for Item</h3>
+    <div class="modal-content">
+        <h3>SKUs for Item</h3>
 
-    <div id="skuListContainer" class="sku-table-container">
-      <p>Loading...</p>
+        <div id="skuListContainer" class="sku-table-container">
+            <p>Loading...</p>
+        </div>
+
+        <!-- Bulk Save/Delete buttons -->
+        <div class="sku-bulk-actions">
+            <button type="button" id="saveAllSkusBtn" class="button">Save All</button>
+            <button type="button" id="deleteAllSkusBtn" class="button delete-btn">Delete All</button>
+        </div>
+
+        <div id="generateSkuSection" class="hidden">
+            <button type="button" id="generateSkusBtn" class="button">Generate SKUs from Quantity</button>
+        </div>
+
+        <form id="addSkuForm" class="sku-form">
+            <h4>Add New SKU</h4>
+            <label for="skuCode">SKU Code</label>
+            <input type="text" id="skuCode" name="sku_code" required>
+            <label for="serialNumber">Serial Number (optional)</label>
+            <input type="text" id="serialNumber" name="serial_number">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="in_stock">In Stock</option>
+                <option value="sold">Sold</option>
+                <option value="damaged">Damaged</option>
+            </select>
+            <label for="expirationDate">Expiration Date (optional)</label>
+            <input type="date" id="expirationDate" name="expiration_date">
+
+            <div class="sku-actions-row">
+                <button type="submit" class="button">Add SKU</button>
+                <button type="button" id="closeSkuModal" class="button">Close</button>
+            </div>
+        </form>
     </div>
-
-    <!-- Bulk Save/Delete buttons -->
-    <div class="sku-bulk-actions">
-      <button type="button" id="saveAllSkusBtn" class="button">Save All</button>
-      <button type="button" id="deleteAllSkusBtn" class="button delete-btn">Delete All</button>
-    </div>
-
-    <div id="generateSkuSection" class="hidden">
-      <button type="button" id="generateSkusBtn" class="button">Generate SKUs from Quantity</button>
-    </div>
-
-    <form id="addSkuForm" class="sku-form">
-      <h4>Add New SKU</h4>
-      <label for="skuCode">SKU Code</label>
-      <input type="text" id="skuCode" name="sku_code" required>
-      <label for="serialNumber">Serial Number (optional)</label>
-      <input type="text" id="serialNumber" name="serial_number">
-      <label for="status">Status</label>
-      <select id="status" name="status">
-        <option value="in_stock">In Stock</option>
-        <option value="sold">Sold</option>
-        <option value="damaged">Damaged</option>
-      </select>
-      <label for="expirationDate">Expiration Date (optional)</label>
-      <input type="date" id="expirationDate" name="expiration_date">
-
-      <div class="sku-actions-row">
-        <button type="submit" class="button">Add SKU</button>
-        <button type="button" id="closeSkuModal" class="button">Close</button>
-      </div>
-    </form>
-  </div>
 </div>
-
-
 </html>
