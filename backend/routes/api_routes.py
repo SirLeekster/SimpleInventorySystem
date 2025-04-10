@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from backend.services import user_service, inventory_service
+from backend.services import user_service, inventory_service, organization_service
 from backend.models.user import User
 from backend.models.inventory_item import Inventory_Item
 from backend.services import log_service
@@ -492,7 +492,41 @@ def change_user_password():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Failed to change password: {str(e)}"}), 500
-    
+
+@api_routes.route('/api/org/users', methods=['GET'])
+def get_users_for_organization():
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    user = user_service.get_user_by_id(session['user_id'])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    users = organization_service.get_users_for_org(user.organization_id)
+    result = []
+    for u in users:
+        result.append({
+            "user_id": u.user_id,
+            "username": u.username,
+            "email": u.email,
+            "created_at": u.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        })
+    return jsonify({"users": result}), 200
+
+
+@api_routes.route('/api/org/logs', methods=['GET'])
+def get_all_logs_for_organization():
+    if 'user_id' not in session:
+        return jsonify({"message": "Not authenticated"}), 401
+
+    user = user_service.get_user_by_id(session['user_id'])
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    logs = log_service.get_all_logs_for_org(user.organization_id)
+
+    return jsonify({"logs": logs}), 200
+
 
 
 @api_routes.route('/api/test-session', methods=['GET'])

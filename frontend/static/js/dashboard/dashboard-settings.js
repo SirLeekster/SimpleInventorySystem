@@ -4,6 +4,8 @@
 
 export function initSettings() {
     loadUserData();
+    loadAllUsers();
+    loadFullLogs();
 
     const editProfileBtn = document.getElementById('editProfileBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
@@ -52,6 +54,11 @@ export function initSettings() {
             e.preventDefault();
             changePassword();
         });
+    }
+
+    const userSearchInput = document.getElementById('orgUserSearch');
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', filterUserList);
     }
 }
 
@@ -127,5 +134,70 @@ function changePassword() {
         .catch(err => {
             console.error("Password change error:", err);
             alert("Failed to change password.");
+        });
+}
+
+// Load all users in the organization
+function loadAllUsers() {
+    fetch('/api/org/users')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('orgUsersList');
+            container.innerHTML = '';
+
+            data.users.forEach(user => {
+                const div = document.createElement('div');
+                div.className = 'user-entry';
+                div.dataset.search = (user.username + ' ' + user.email).toLowerCase();
+                div.textContent = `${user.username} | ${user.email} | joined ${user.created_at}`;
+                container.appendChild(div);
+            });
+        })
+        .catch(err => {
+            console.error("Failed to load org users:", err);
+            document.getElementById('orgUsersList').textContent = "Error loading users.";
+        });
+}
+
+function filterUserList() {
+    const input = document.getElementById('orgUserSearch').value.toLowerCase();
+    const users = document.querySelectorAll('#orgUsersList .user-entry');
+
+    users.forEach(user => {
+        const text = user.dataset.search;
+        if (text.includes(input)) {
+            user.style.display = '';
+        } else {
+            user.style.display = 'none';
+        }
+    });
+}
+
+// Load full activity logs for the org
+function loadFullLogs() {
+    fetch('/api/org/logs')
+        .then(res => res.json())
+        .then(data => {
+            const logContainer = document.getElementById('fullOrgLogs');
+            logContainer.innerHTML = '';
+
+            if (!data.logs || data.logs.length === 0) {
+                logContainer.innerHTML = '<div class="log-item">No logs found.</div>';
+                return;
+            }
+
+            data.logs.forEach(log => {
+                const timestamp = new Date(log.timestamp).toLocaleString();
+                const user = log.username || 'Unknown User';
+                const line = document.createElement('div');
+                line.className = 'log-item';
+                line.textContent = `User: ${user} | Action: ${log.action} | performed at ${timestamp}`;
+                logContainer.appendChild(line);
+            });
+        })
+        .catch(err => {
+            console.error("Failed to load logs:", err);
+            document.getElementById('fullOrgLogs').innerHTML =
+                '<div class="log-item">Error loading logs.</div>';
         });
 }

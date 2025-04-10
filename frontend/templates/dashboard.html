@@ -130,6 +130,7 @@
                     <h3>Profile Information</h3>
                     <button id="editProfileBtn" class="button">Edit Profile</button>
                 </div>
+
                 <div id="profileDisplay" class="profile-card">
                     <div class="profile-field">
                         <span class="field-label">Username:</span>
@@ -188,8 +189,34 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Organization Users -->
+                <div class="profile-card">
+                    <h3>Users in Your Organization</h3>
+                    <input type="text" id="orgUserSearch" placeholder="Search users..."
+                           style="width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                    <div id="orgUsersList" class="activity-log-scroll" style="max-height: 250px; overflow-y: auto;">
+                        <p>Loading users...</p>
+                    </div>
+                </div>
+
+                <!-- Organization Logs (Table Layout) -->
+                <div class="profile-card">
+                    <h3>Full Organization Logs</h3>
+                    <div id="fullOrgLogs" class="activity-log-scroll"
+                         style="max-height: 250px; overflow-y: auto; overflow-x: auto;">
+                        <!-- The table’s natural width is determined by the longest log entry.
+                             Your log-loading code must output <tr class="log-item"><td>…</td></tr> -->
+                        <table id="fullOrgLogs-inner">
+                            <tr class="log-item">
+                                <td>Loading logs...</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
+
     </main>
 </div>
 
@@ -266,6 +293,4 @@
         </form>
     </div>
 </div>
-
-
 </html>

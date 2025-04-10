@@ -556,5 +556,35 @@ section {
     border-bottom: none;
 }
 
+#fullOrgLogs {
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
+  max-height: 250px;
+  display: block;
+  width: 100%;
+}
+
+/* Remove the fixed width so that the table can expand as wide as its content */
+#fullOrgLogs-inner {
+  border-collapse: collapse;
+  white-space: nowrap;
+  /* No width: 100% — let the table’s width be auto */
+}
+
+.log-item td {
+  font-size: 0.9em;
+  font-family: monospace;
+  padding: 6px 12px;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
 
 
