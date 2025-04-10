@@ -71,7 +71,9 @@ CREATE TABLE sales (
     price REAL NOT NULL,
     sold_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (inventory_id) REFERENCES inventory(id),
+
     FOREIGN KEY (sku_id) REFERENCES inventory_skus(sku_id)
+		ON DELETE CASCADE
 );
 
 
