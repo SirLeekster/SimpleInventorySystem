@@ -59,8 +59,6 @@ function renderInventoryTable(items) {
 }
 
 
-
-
 function setupEditButtonHandlers() {
     document.getElementById("inventoryTableBody").addEventListener("click", handleEditButtonClick);
 }
@@ -188,7 +186,7 @@ document.getElementById("addSkuForm").addEventListener("submit", async function 
     try {
         const res = await fetch(`/api/add_sku_to_inventory_item/${itemId}`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
 
@@ -222,22 +220,24 @@ document.getElementById("skuListContainer").addEventListener("click", async func
         try {
             const res = await fetch(`/api/update_sku/${skuId}`, {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message);
             alert("SKU updated.");
+            loadInventoryTable(); // ✅ reloads quantity
         } catch (err) {
             console.error("Update failed:", err);
             alert("Failed to update SKU.");
         }
     }
 
+
     if (e.target.classList.contains("delete-sku-btn")) {
         if (!confirm("Delete this SKU?")) return;
         try {
-            const res = await fetch(`/api/delete_sku/${skuId}`, { method: "DELETE" });
+            const res = await fetch(`/api/delete_sku/${skuId}`, {method: "DELETE"});
             const data = await res.json();
             if (!res.ok) throw new Error(data.message);
             alert("SKU deleted.");
@@ -293,14 +293,14 @@ document.getElementById("editInventoryForm").addEventListener("submit", async fu
     try {
         const res = await fetch(`/api/update_inventory_item/${itemId}`, {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
         // Call backend to sync SKUs to match quantity
-        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, { method: "POST" });
+        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, {method: "POST"});
 
         alert("Item updated.");
         document.getElementById("editModal").classList.add("hidden");
@@ -358,14 +358,14 @@ document.getElementById("saveAllSkusBtn").addEventListener("click", async functi
             expiration_date: row.querySelector(".sku-exp").value || null
         };
 
-        updates.push({ skuId, payload });
+        updates.push({skuId, payload});
     });
 
     try {
-        for (const { skuId, payload } of updates) {
+        for (const {skuId, payload} of updates) {
             const res = await fetch(`/api/update_sku/${skuId}`, {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(payload)
             });
 

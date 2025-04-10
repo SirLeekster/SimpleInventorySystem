@@ -1,52 +1,61 @@
 /* Dashboard container layout */
 .dashboard-container {
     display: flex;
+    flex-direction: column; /* ⬅️ key change */
     min-height: calc(100vh - 100px);
-    position: relative;
-    justify-content: flex-start;
-    align-items: flex-start;
 }
 
-/* Sidebar */
+
 .sidebar {
     background-color: #f4f4f4;
     color: #333;
-    width: 220px;
-    height: calc(100vh - 100px); /* fill screen except header/footer */
-    border-right: 1px solid #ccc;
+    width: 100%;            /* ⬅️ spans the full width */
+    border-bottom: 1px solid #ccc; /* ⬅️ horizontal border now */
+    border-right: none;
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: relative;
+    justify-content: flex-start;  /* ⬅️ align items to the left */
 }
 
-/* Sidebar menu */
+
+
 .sidebar-menu {
     list-style: none;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     padding: 0;
     margin: 0;
     width: 100%;
 }
 
+
+
 .sidebar-menu li {
-    width: 100%;
-    border-bottom: 1px solid #ccc;
+    flex: 1; /* ⬅️ each li takes equal space */
+    text-align: center;
 }
+
 
 .sidebar-menu li a {
     display: block;
-    width: 100%;
     padding: 15px 20px;
     color: #333;
     text-decoration: none;
-    text-align: left;
+    text-align: center;
+    white-space: nowrap;
+    border-right: 1px solid #ccc;
+}
+
+.sidebar-menu li:last-child a {
+    border-right: none;  /* prevent last item from having a right border */
 }
 
 .sidebar-menu li a:hover {
     background-color: #ddd;
 }
+
 
 /* Dashboard content */
 .dashboard-content {
@@ -153,7 +162,9 @@ section {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     max-height: 80vh;
     overflow-y: auto;
+    position: relative; /* ✅ This is key */
 }
+
 
 .modal-content h3 {
     margin-top: 0;
@@ -165,14 +176,57 @@ section {
     margin-top: 20px;
 }
 
+.modal-content .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: transparent;
+    color: #999;
+    font-size: 28px;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.modal-content .close-btn:hover {
+    color: #333;
+}
+
+.sku-bulk-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.left-action,
+.right-action {
+    flex: 1;
+}
+
+.left-action {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.right-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
 .delete-btn {
     background: #dc3545;
     color: white;
-    padding: 5px 10px;
+    padding: 10px 15px; /* Match .button size */
+    font-size: 14px;    /* Match .button text */
     border: none;
-    border-radius: 5px;
+    border-radius: 4px; /* Match .button radius */
     cursor: pointer;
+    transition: background-color 0.2s;
+    line-height: 1.5;
 }
+
 
 .delete-btn:hover {
     background: #c82333;
@@ -413,7 +467,7 @@ section {
 
 .sku-actions-row {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 10px;
     margin-top: 15px;
 }

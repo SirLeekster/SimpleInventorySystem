@@ -255,6 +255,7 @@
 <!-- Edit Modal -->
 <div id="editModal" class="modal hidden">
     <div class="modal-content">
+        <button type="button" id="cancelEdit" class="close-btn">×</button>
         <h3>Edit Inventory Item</h3>
         <form id="editInventoryForm">
             <input type="hidden" id="editItemId">
@@ -269,9 +270,8 @@
                 <label for="editImage" class="custom-file-label">Choose Image</label>
             </div>
             <div class="modal-actions">
+                <button type="button" id="deleteItem" class="delete-btn">Delete</button>
                 <button type="submit" class="button">Save</button>
-                <button type="button" id="cancelEdit" class="button">Cancel</button>
-                <button type="button" id="deleteItem" class="button delete-btn">Delete</button>
             </div>
         </form>
     </div>
@@ -280,6 +280,7 @@
 <!-- SKU Modal -->
 <div id="skuModal" class="modal hidden">
     <div class="modal-content">
+        <button type="button" id="closeSkuModal" class="close-btn">×</button>
         <h3>SKUs for Item</h3>
 
         <div id="skuListContainer" class="sku-table-container">
@@ -288,10 +289,13 @@
 
         <!-- Bulk Save/Delete buttons -->
         <div class="sku-bulk-actions">
-            <button type="button" id="saveAllSkusBtn" class="button">Save All</button>
-            <button type="button" id="deleteAllSkusBtn" class="button delete-btn">Delete All</button>
+            <div class="left-action">
+                <button type="button" id="deleteAllSkusBtn" class="delete-btn">Delete All</button>
+            </div>
+            <div class="right-action">
+                <button type="button" id="saveAllSkusBtn" class="button">Save All</button>
+            </div>
         </div>
-
         <div id="generateSkuSection" class="hidden">
             <button type="button" id="generateSkusBtn" class="button">Generate SKUs from Quantity</button>
         </div>
@@ -313,7 +317,6 @@
 
             <div class="sku-actions-row">
                 <button type="submit" class="button">Add SKU</button>
-                <button type="button" id="closeSkuModal" class="button">Close</button>
             </div>
         </form>
     </div>

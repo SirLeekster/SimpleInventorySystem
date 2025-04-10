@@ -309,30 +309,34 @@ def update_sku(sku_id):
     sku.expiration_date = data.get("expiration_date", sku.expiration_date)
 
     try:
-        # If status changed to sold, prepare to insert Sale before committing anything
-        if original_status != "sold" and new_status == "sold":
-            print(f"💡 SKU {sku_id} changed to SOLD — logging sale...")
-            item = Inventory_Item.query.get(sku.inventory_id)
-            if not item:
-                return jsonify({"message": "Item not found for SKU"}), 404
+        item = Inventory_Item.query.get(sku.inventory_id)
+        if not item:
+            return jsonify({"message": "Item not found for SKU"}), 404
 
+        # Handle sale logging
+        if original_status != "sold" and new_status == "sold":
             new_sale = Sale(
                 inventory_id=item.id,
-                sku_id=sku.sku_id,  # ✅ track specific SKU sold
+                sku_id=sku.sku_id,
                 organization_id=item.organization_id,
                 price=item.price
             )
             db.session.add(new_sale)
 
-        # Final commit (SKU + Sale together)
+        # Auto-decrement quantity on sold/damaged
+        if original_status == "in_stock" and new_status in ["sold", "damaged"]:
+            if item.quantity <= 0:
+                return jsonify({"message": "Cannot reduce quantity below 0"}), 400
+            item.quantity -= 1
+
+        # Auto-increment quantity when status is restored to in_stock
+        if original_status in ["sold", "damaged"] and new_status == "in_stock":
+            item.quantity += 1
+
         db.session.commit()
         log_service.log_user_action(session['user_id'], f"Edited SKU ID {sku_id} - {sku.sku_code}")
         return jsonify({"message": "SKU updated successfully"}), 200
 
-        if original_status != "sold" and new_status == "sold":
-            return jsonify({"message": "SKU updated and sale recorded"}), 200
-        else:
-            return jsonify({"message": "SKU updated successfully"}), 200
 
     except Exception as e:
         db.session.rollback()
@@ -343,20 +347,29 @@ def update_sku(sku_id):
 @api_routes.route('/api/delete_sku/<int:sku_id>', methods=['DELETE'])
 def delete_sku(sku_id):
     if 'user_id' not in session:
+        print("Not authenticated")
         return jsonify({"message": "Not authenticated"}), 401
 
     from backend.models.inventory_sku import InventorySKU
 
-    sku = InventorySKU.query.get(sku_id)
-    if not sku:
-        return jsonify({"message": "SKU not found"}), 404
-
     try:
+        sku = InventorySKU.query.get(sku_id)
+        if not sku:
+            print(f"SKU ID {sku_id} not found")
+            return jsonify({"message": "SKU not found"}), 404
+
+        print(f"Deleting SKU ID={sku_id}, Code={sku.sku_code}")
+
         db.session.delete(sku)
         db.session.commit()
+
         log_service.log_user_action(session['user_id'], f"Deleted SKU ID {sku_id} - {sku.sku_code}")
+        print(f"Deleted SKU {sku_id} successfully")
+
         return jsonify({"message": "SKU deleted successfully"}), 200
+
     except Exception as e:
+        print(f"Exception while deleting SKU {sku_id}: {e}")
         db.session.rollback()
         return jsonify({"message": f"Failed to delete SKU: {str(e)}"}), 500
 
