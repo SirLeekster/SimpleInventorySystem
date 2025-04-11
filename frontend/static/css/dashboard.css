@@ -253,8 +253,8 @@ section {
 
 
 .delete-btn {
-    background: #dc3545;
-    color: white;
+    background: #dc3545 !important;
+    color: white !important;
     padding: 10px 15px; /* Match .button size */
     font-size: 14px;    /* Match .button text */
     border: none;

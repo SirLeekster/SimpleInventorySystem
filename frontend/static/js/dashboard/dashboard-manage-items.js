@@ -148,7 +148,8 @@ function loadSkuList(itemId, quantity) {
                                 <td><input type="date" class="sku-exp" value="${sku.expiration_date || ''}"></td>
                                 <td>
                                     <button class="save-sku-btn button small">Save</button>
-                                    <button class="delete-sku-btn button small delete-btn">Delete</button>
+                                    <button class="delete-sku-btn delete-btn button small">Delete</button>
+
                                 </td>
                             </tr>
                         `).join("")}
