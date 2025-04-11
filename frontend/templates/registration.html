@@ -8,54 +8,62 @@
     <script src="{{ url_for('static', filename='js/registration.js') }}" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Simple Inventory System</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Create Account</h2>
-            <form id="registrationForm">
-                <label for="full_name">Full Name:</label>
-                <input type="text" name="full_name" id="full_name" required>
+<header>
+    <div class="header-content">
+        <div class="logo-left">
+            <img src="{{ url_for('static', filename='image_uploads/sis_logo.png') }}" alt="Simple Inventory Logo"
+                 class="header-logo">
+        </div>
+        <div class="header-title">
+            <h1>Simple Inventory System</h1>
+        </div>
+    </div>
+</header>
+<main>
+    <section>
+        <h2>Create Account</h2>
+        <form id="registrationForm">
+            <label for="full_name">Full Name:</label>
+            <input type="text" name="full_name" id="full_name" required>
 
-                <label for="username">Username:</label>
-                <input type="text" name="username" id="username" required>
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required>
 
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
 
-                <label for="orgChoice">Organization:</label>
-                <select id="orgChoice" name="org_choice" required>
-                    <option value="">-- Select an option --</option>
-                    <option value="join">Join Existing Organization</option>
-                    <option value="create">Create New Organization</option>
-                </select>
+            <label for="orgChoice">Organization:</label>
+            <select id="orgChoice" name="org_choice" required>
+                <option value="">-- Select an option --</option>
+                <option value="join">Join Existing Organization</option>
+                <option value="create">Create New Organization</option>
+            </select>
 
-                <div id="joinOrgField" class="hidden">
-                    <label for="existingOrg">Organization Name (to join):</label>
-                    <input type="text" name="existing_org" id="existingOrg">
-                </div>
+            <div id="joinOrgField" class="hidden">
+                <label for="existingOrg">Organization Name (to join):</label>
+                <input type="text" name="existing_org" id="existingOrg">
+            </div>
 
-                <div id="createOrgField" class="hidden">
-                    <label for="newOrg">New Organization Name:</label>
-                    <input type="text" name="new_org" id="newOrg">
-                </div>
+            <div id="createOrgField" class="hidden">
+                <label for="newOrg">New Organization Name:</label>
+                <input type="text" name="new_org" id="newOrg">
+            </div>
 
-                <label for="password">Password:</label>
-                <input type="password" name="password" id="password" required>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
 
-                <label for="confirm_password">Confirm Password:</label>
-                <input type="password" name="confirm_password" id="confirm_password" required>
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" name="confirm_password" id="confirm_password" required>
 
-                <div class="auth-buttons">
-                    <button type="submit" class="button">Register</button>
-                    <a href="/login" class="button">Back to Login</a>
-                </div>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Simple Inventory System</p>
-    </footer>
+            <div class="auth-buttons">
+                <button type="submit" class="button">Register</button>
+                <a href="/login" class="button">Back to Login</a>
+            </div>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2025 Simple Inventory System</p>
+</footer>
 </body>
 </html>

@@ -8,34 +8,42 @@
     <script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Simple Inventory System</h1>
-    </header>
-    <main>
-        <section>
-            <h2>Login</h2>
-            <!-- Remove action and method so that JS handles submission -->
-            <form id="loginForm">
-                <label for="email">Email:</label>
-                <input type="email" name="email" id="email" required>
+<header>
+    <div class="header-content">
+        <div class="logo-left">
+            <img src="{{ url_for('static', filename='image_uploads/sis_logo.png') }}" alt="Simple Inventory Logo"
+                 class="header-logo">
+        </div>
+        <div class="header-title">
+            <h1>Simple Inventory System</h1>
+        </div>
+    </div>
+</header>
+<main>
+    <section>
+        <h2>Login</h2>
+        <!-- Remove action and method so that JS handles submission -->
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required>
 
-                <label for="password">Password:</label>
-                <input type="password" name="password" id="password" required>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
 
-                <div class="auth-buttons">
-                    <button type="submit" class="button">Login</button>
-                    <a href="/registration" class="button">Register</a>
-                </div>
+            <div class="auth-buttons">
+                <button type="submit" class="button">Login</button>
+                <a href="/registration" class="button">Register</a>
+            </div>
 
-                <!-- Forgot Password link -->
-                <div class="forgot-password">
-                    <a href="/forgot-password">Forgot Password?</a>
-                </div>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Simple Inventory System</p>
-    </footer>
+            <!-- Forgot Password link -->
+            <div class="forgot-password">
+                <a href="/forgot-password">Forgot Password?</a>
+            </div>
+        </form>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2025 Simple Inventory System</p>
+</footer>
 </body>
 </html>
