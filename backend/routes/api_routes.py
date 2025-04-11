@@ -41,6 +41,17 @@ def login():
     else:
         return jsonify({"message": "Invalid email or password"}), 401
 
+@api_routes.route('/api/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"message": "Email is required"}), 400
+
+    # Replace this with actual reset logic or email sendings
+    return jsonify({"message": f"Reset instructions sent to {email}"}), 200
+
 # ========================
 # INVENTORY ROUTES
 # ========================

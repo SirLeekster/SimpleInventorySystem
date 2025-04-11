@@ -38,3 +38,38 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+// Handle "Forgot Password?" click
+// Handle "Forgot Password?" click with real backend call
+document.addEventListener("DOMContentLoaded", function () {
+    const forgotLink = document.querySelector(".forgot-password a");
+
+    if (forgotLink) {
+        forgotLink.addEventListener("click", async function (e) {
+            e.preventDefault();
+
+            const email = prompt("Enter your email to reset your password:");
+            if (!email || !email.trim()) return;
+
+            try {
+                const response = await fetch("/api/forgot-password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: email.trim() })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(result.message || "Reset instructions sent.");
+                } else {
+                    alert(result.message || "Error sending reset instructions.");
+                }
+            } catch (err) {
+                console.error("Reset error:", err);
+                alert("Something went wrong. Try again later.");
+            }
+        });
+    }
+});
+
