@@ -324,7 +324,7 @@ def update_sku(sku_id):
         if not item:
             return jsonify({"message": "Item not found for SKU"}), 404
 
-        # Handle sale logging
+        # ✅ Add sale record if SKU just became "sold"
         if original_status != "sold" and new_status == "sold":
             new_sale = Sale(
                 inventory_id=item.id,
@@ -333,6 +333,10 @@ def update_sku(sku_id):
                 price=item.price
             )
             db.session.add(new_sale)
+
+        # ✅ Remove sale if reverting from "sold" to anything else
+        if original_status == "sold" and new_status != "sold":
+            Sale.query.filter_by(sku_id=sku.sku_id).delete()
 
         # Auto-decrement quantity on sold/damaged
         if original_status == "in_stock" and new_status in ["sold", "damaged"]:
@@ -347,7 +351,6 @@ def update_sku(sku_id):
         db.session.commit()
         log_service.log_user_action(session['user_id'], f"Edited SKU ID {sku_id} - {sku.sku_code}")
         return jsonify({"message": "SKU updated successfully"}), 200
-
 
     except Exception as e:
         db.session.rollback()

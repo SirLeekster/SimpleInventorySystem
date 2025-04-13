@@ -1,6 +1,7 @@
 from backend.database import db
 from backend.models.inventory_item import Inventory_Item
 from backend.models.inventory_sku import InventorySKU
+from backend.models.Sale import Sale
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from fastapi import HTTPException
@@ -25,7 +26,9 @@ def get_dashboard_stats_for_org(organization_id):
         Inventory_Item.quantity == 0
     ).scalar()
 
-    total_sales = 0.00  # Placeholder (future implementation)
+    total_sales = db.session.query(func.coalesce(func.sum(Sale.price), 0.00)).filter_by(
+        organization_id=organization_id
+    ).scalar()
 
     top_item = db.session.query(Inventory_Item.product_name).filter_by(
         organization_id=organization_id
@@ -45,6 +48,7 @@ def get_dashboard_stats_for_org(organization_id):
         "top_item": top_item,
         "recent_additions": f"{recent_additions} this week"
     }
+
 
 def add_inventory_item_to_db(item_data, user):
     try:

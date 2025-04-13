@@ -558,6 +558,7 @@ section {
 
 .activity-log-scroll {
     overflow-y: auto;
+    overflow-x: auto; /* ✅ enable horizontal scroll */
     max-height: 250px;
     padding: 10px 40px;
     display: flex;
@@ -565,9 +566,20 @@ section {
     gap: 6px;
 }
 
+
 #activity-log {
+    overflow-x: auto;   /* Enables horizontal scroll */
+    overflow-y: auto;   /* Keeps vertical scroll */
     width: 100%;
 }
+
+.log-items-wrapper {
+    min-width: 1200px;  /* Force it to be wider than container */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 
 .log-item {
     font-size: 0.9em;
@@ -575,13 +587,13 @@ section {
     padding: 6px 12px;
     border-bottom: 1px solid #ddd;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
+    overflow: visible;
+    text-overflow: unset;
+    display: inline-block;
+    min-width: max-content;
 }
+
+
 
 .log-item:last-child {
     border-bottom: none;
