@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS inventory_skus (
         ON DELETE CASCADE
 );
 
-CREATE TABLE sales (
+CREATE TABLE IF NOT EXISTS sales (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     inventory_id INTEGER NOT NULL,
     sku_id BIGINT NOT NULL,  -- ✅ Add this
@@ -76,6 +76,28 @@ CREATE TABLE sales (
     FOREIGN KEY (sku_id) REFERENCES inventory_skus(sku_id)
 		ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS suppliers  (
+    supplier_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    email VARCHAR(255),
+    address VARCHAR(255),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS inventory_orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    supplier_id INT,
+    quantity INT NOT NULL,
+    status ENUM('pending', 'fulfilled', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
+);
+
 
 
 CREATE INDEX idx_email ON users(email);
