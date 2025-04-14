@@ -59,8 +59,21 @@ function setupSidebarNavigation() {
 }
 
 // Initial load
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     setupSidebarNavigation();
+
+    try {
+        const res = await fetch('/api/user/profile');
+        if (!res.ok) throw new Error('Failed to load profile');
+
+        const user = await res.json();
+        window.currentUserRole = user.role;
+        window.isAdmin = user.role === 'admin';
+    } catch (err) {
+        console.error("Failed to load user role:", err);
+        window.currentUserRole = null;
+        window.isAdmin = false;
+    }
 
     const lastSection = localStorage.getItem("lastDashboardSection") || "dashboardOverview";
     showSection(lastSection);
@@ -85,3 +98,4 @@ document.addEventListener("DOMContentLoaded", () => {
             initOverview();
     }
 });
+

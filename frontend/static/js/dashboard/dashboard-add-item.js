@@ -53,6 +53,11 @@ async function handleAddItemSubmit(e) {
 
         const result = await response.json();
 
+        if (response.status === 403) {
+            alert("Permission denied: You do not have access to add inventory items.");
+            return;
+        }
+
         if (!response.ok) {
             alert("Error: " + result.message);
             return;
@@ -74,6 +79,11 @@ async function handleAddItemSubmit(e) {
                 });
 
                 const imgResult = await imgRes.json();
+                if (imgRes.status === 403) {
+                    alert("Permission denied: You do not have access to upload images.");
+                    return;
+                }
+
                 if (!imgRes.ok) {
                     console.error("Image upload error:", imgResult.message);
                 }

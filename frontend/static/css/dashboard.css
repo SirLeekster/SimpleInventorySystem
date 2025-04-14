@@ -264,6 +264,12 @@ section {
     line-height: 1.5;
 }
 
+.delete-btn.small {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.2;
+}
+
 
 .delete-btn:hover {
     background: #c82333;

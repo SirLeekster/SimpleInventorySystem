@@ -69,6 +69,10 @@ function loadUserData() {
             document.getElementById('displayUsername').textContent = data.username || 'N/A';
             document.getElementById('displayEmail').textContent = data.email || 'N/A';
             document.getElementById('displayOrganization').textContent = data.organization_name || 'N/A';
+
+            // 🔐 Store role globally
+            window.currentUserRole = data.role;
+            window.isAdmin = data.role === 'admin';
         })
         .catch(err => {
             console.error("Failed to load user data:", err);
@@ -118,9 +122,7 @@ function changePassword() {
         body: JSON.stringify({current_password: currentPassword, new_password: newPassword})
     })
         .then(res => {
-            if (!res.ok) {
-                throw new Error("Password change failed");
-            }
+            if (!res.ok) throw new Error("Password change failed");
             return res.json();
         })
         .then(() => {
@@ -137,8 +139,6 @@ function changePassword() {
         });
 }
 
-// Load all users in the organization
-// Load all users in the organization (updated for table layout)
 function loadAllUsers() {
     fetch('/api/org/users')
         .then(res => res.json())
@@ -147,13 +147,12 @@ function loadAllUsers() {
             tbody.innerHTML = '';
 
             if (!data.users || data.users.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3">No users found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5">No users found.</td></tr>';
                 return;
             }
 
             data.users.forEach(user => {
                 const row = document.createElement('tr');
-                // Set up a dataset for searching, using all table cell content
                 row.dataset.search = `${user.username} ${user.email}`.toLowerCase();
 
                 const usernameCell = document.createElement('td');
@@ -163,40 +162,114 @@ function loadAllUsers() {
                 emailCell.textContent = user.email || 'N/A';
 
                 const joinedCell = document.createElement('td');
-                // Use user.created_at directly or format as needed
                 joinedCell.textContent = user.created_at || 'N/A';
+
+                const roleCell = document.createElement('td');
+                roleCell.textContent = user.role || 'unknown';
+
+                const actionsCell = document.createElement('td');
+
+                if (window.isAdmin && user.role !== 'admin') {
+                    const roleSelect = document.createElement('select');
+                    ['readonly', 'staff', 'admin'].forEach(roleOption => {
+                        const opt = document.createElement('option');
+                        opt.value = roleOption;
+                        opt.textContent = roleOption;
+                        if (roleOption === user.role) opt.selected = true;
+                        roleSelect.appendChild(opt);
+                    });
+                    roleSelect.addEventListener('change', () => {
+                        const selectedRole = roleSelect.value;
+
+                        if (confirm(`Are you sure you want to change ${user.username}'s role to "${selectedRole}"?`)) {
+                            updateUserRole(user.user_id, selectedRole);
+                        } else {
+                            // Reset dropdown to previous role
+                            roleSelect.value = user.role;
+                        }
+                    });
+
+                    actionsCell.appendChild(roleSelect);
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.classList.add('delete-btn', 'small');
+                    deleteBtn.style.marginLeft = '25px';
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm(`Are you sure you want to delete ${user.username}?`)) {
+                            deleteUser(user.user_id);
+                        }
+                    });
+                    actionsCell.appendChild(deleteBtn);
+                } else {
+                    actionsCell.innerHTML = window.isAdmin ? '<em>Admin</em>' : '';
+                }
 
                 row.appendChild(usernameCell);
                 row.appendChild(emailCell);
                 row.appendChild(joinedCell);
-
+                row.appendChild(roleCell);
+                row.appendChild(actionsCell);
                 tbody.appendChild(row);
             });
         })
         .catch(err => {
             console.error("Failed to load org users:", err);
-            document.getElementById('orgUsersTableBody').innerHTML = '<tr><td colspan="3">Error loading users.</td></tr>';
+            document.getElementById('orgUsersTableBody').innerHTML = '<tr><td colspan="5">Error loading users.</td></tr>';
         });
 }
 
-// Updated filter function for the users table
-function filterUserList() {
-    const input = document.getElementById('orgUserSearch').value.toLowerCase();
-    // Select all rows from the users table body
-    const rows = document.querySelectorAll('#orgUsersTableBody tr');
+function updateUserRole(userId, role) {
+    fetch('/api/promote_user', {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({user_id: userId, role: role})
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Role update failed');
+            return res.json();
+        })
+        .then(data => {
+            alert(data.message || "User role updated.");
 
-    rows.forEach(row => {
-        // Compare the combined text content to the input
-        if (row.textContent.toLowerCase().includes(input)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
+            // ✅ Delay the reload slightly to let DB commit finish
+            setTimeout(() => {
+                loadAllUsers();
+            }, 150); // 150ms buffer
+        })
+        .catch(err => {
+            console.error('Failed to update role:', err);
+            alert("Error updating user role.");
+        });
 }
 
 
-// Load full activity logs for the org
+function deleteUser(userId) {
+    fetch(`/api/user/${userId}`, {
+        method: 'DELETE'
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Deletion failed");
+            return res.json();
+        })
+        .then(data => {
+            alert(data.message || "User deleted.");
+            loadAllUsers();
+        })
+        .catch(err => {
+            console.error("Failed to delete user:", err);
+            alert("Error deleting user.");
+        });
+}
+
+function filterUserList() {
+    const input = document.getElementById('orgUserSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('#orgUsersTableBody tr');
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(input) ? '' : 'none';
+    });
+}
+
 function loadFullLogs() {
     fetch('/api/org/logs')
         .then(res => res.json())
@@ -212,7 +285,6 @@ function loadFullLogs() {
             data.logs.forEach(log => {
                 const row = document.createElement('tr');
                 row.classList.add('log-row');
-
                 row.dataset.search = `${log.username} ${log.action} ${log.timestamp}`.toLowerCase();
 
                 const userCell = document.createElement('td');
@@ -227,7 +299,6 @@ function loadFullLogs() {
                 row.appendChild(userCell);
                 row.appendChild(actionCell);
                 row.appendChild(timeCell);
-
                 tbody.appendChild(row);
             });
         })
@@ -241,14 +312,8 @@ document.addEventListener('input', function (e) {
     if (e.target.id === 'logSearchInput') {
         const query = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#logsTableBody .log-row');
-
         rows.forEach(row => {
-            if (row.dataset.search.includes(query)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = row.dataset.search.includes(query) ? '' : 'none';
         });
     }
 });
-

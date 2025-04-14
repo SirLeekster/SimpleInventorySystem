@@ -22,13 +22,20 @@ def add_user_to_db(user_data):
         if not organization_name:
             return "missing_org_name"
 
+        # ✅ Determine role based on org creation or join
+        if org_choice == "create":
+            role = "admin"
+        else:
+            role = "readonly"
+
         # Create user without org_id yet
         new_user = User(
             full_name=full_name,
             username=username,
             email=email,
             password_hash=werkzeug.security.generate_password_hash(password),
-            organization_id=None
+            organization_id=None,
+            role=role  # ✅ Set role here
         )
         db.session.add(new_user)
         db.session.flush()  # get user_id without full commit
@@ -53,7 +60,6 @@ def add_user_to_db(user_data):
             return "duplicate"
         return "internal_error"
 
-
 def login_user(login_data):
     try:
         email = login_data.get("email")
@@ -77,3 +83,44 @@ def get_user_by_id(user_id):
 def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
+def user_has_role(user_id, required_roles):
+    user = get_user_by_id(user_id)
+    if not user:
+        return False
+    return user.role in required_roles
+
+
+
+def promote_user(user_id, new_role, admin_user):
+    if new_role not in ['admin', 'staff', 'readonly']:
+        return "invalid_role"
+
+    target_user = get_user_by_id(user_id)
+    if not target_user:
+        return "not_found"
+
+    if target_user.organization_id != admin_user.organization_id:
+        return "cross_org"
+
+    old_role = target_user.role
+    target_user.role = new_role
+    db.session.commit()
+
+    return {"status": "success", "old_role": old_role, "new_role": new_role, "target_user": target_user}
+
+
+def delete_user(user_id, admin_user):
+    target_user = get_user_by_id(user_id)
+    if not target_user:
+        return "not_found"
+
+    if target_user.organization_id != admin_user.organization_id:
+        return "cross_org"
+
+    if target_user.user_id == admin_user.user_id:
+        return "self_delete"
+
+    db.session.delete(target_user)
+    db.session.commit()
+
+    return {"status": "success", "target_user": target_user}

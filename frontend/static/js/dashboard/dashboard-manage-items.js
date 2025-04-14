@@ -20,8 +20,6 @@ document.getElementById("inventorySearch").addEventListener("input", function ()
     renderInventoryTable(filteredItems);
 });
 
-
-// Load inventory into table
 let allInventoryItems = [];
 
 function loadInventoryTable() {
@@ -33,7 +31,7 @@ function loadInventoryTable() {
             setupEditButtonHandlers();
             setupSkuButtonHandlers();
         })
-        .catch(err => console.error("Error fetching inventory items:", err));
+        .catch(err => console.error("Failed to load inventory items:", err));
 }
 
 function renderInventoryTable(items) {
@@ -57,7 +55,6 @@ function renderInventoryTable(items) {
         tableBody.appendChild(row);
     });
 }
-
 
 function setupEditButtonHandlers() {
     document.getElementById("inventoryTableBody").addEventListener("click", handleEditButtonClick);
@@ -97,7 +94,6 @@ function handleSkuButtonClick(e) {
 }
 
 function loadSkuList(itemId, quantity) {
-
     const saveAllBtn = document.getElementById("saveAllSkusBtn");
     const deleteAllBtn = document.getElementById("deleteAllSkusBtn");
 
@@ -119,7 +115,6 @@ function loadSkuList(itemId, quantity) {
                 generateSection.classList.add("hidden");
                 saveAllBtn.classList.remove("hidden");
                 deleteAllBtn.classList.remove("hidden");
-
 
                 const table = document.createElement("table");
                 table.classList.add("sku-table");
@@ -149,7 +144,6 @@ function loadSkuList(itemId, quantity) {
                                 <td>
                                     <button class="save-sku-btn button small">Save</button>
                                     <button class="delete-sku-btn delete-btn button small">Delete</button>
-
                                 </td>
                             </tr>
                         `).join("")}
@@ -159,12 +153,11 @@ function loadSkuList(itemId, quantity) {
             }
         })
         .catch(err => {
-            console.error("Error loading SKUs:", err);
-            container.innerHTML = "<p>Error loading SKUs.</p>";
+            alert("Failed to load SKUs.");
+            console.error("Failed to load SKUs:", err);
         });
 }
 
-// ======= CANCEL Edit =======
 document.getElementById("cancelEdit").addEventListener("click", () => {
     document.getElementById("editModal").classList.add("hidden");
 });
@@ -192,14 +185,18 @@ document.getElementById("addSkuForm").addEventListener("submit", async function 
         });
 
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        if (!res.ok) throw { status: res.status, message: data.message };
 
         alert("SKU added.");
         this.reset();
         loadSkuList(itemId);
     } catch (err) {
-        console.error("Error adding SKU:", err);
-        alert("Failed to add SKU.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to add SKU.");
+        }
+        console.error("Failed to add SKU:", err);
     }
 });
 
@@ -225,27 +222,37 @@ document.getElementById("skuListContainer").addEventListener("click", async func
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw { status: res.status, message: data.message };
+
             alert("SKU updated.");
-            loadInventoryTable(); // ✅ reloads quantity
+            loadInventoryTable();
         } catch (err) {
-            console.error("Update failed:", err);
-            alert("Failed to update SKU.");
+            if (err.status === 403) {
+                alert("Permission denied: You do not have access to edit inventory items.");
+            } else {
+                alert("Failed to update SKU.");
+            }
+            console.error("Failed to update SKU:", err);
         }
     }
 
-
     if (e.target.classList.contains("delete-sku-btn")) {
         if (!confirm("Delete this SKU?")) return;
+
         try {
-            const res = await fetch(`/api/delete_sku/${skuId}`, {method: "DELETE"});
+            const res = await fetch(`/api/delete_sku/${skuId}`, { method: "DELETE" });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw { status: res.status, message: data.message };
+
             alert("SKU deleted.");
             loadSkuList(itemId);
         } catch (err) {
-            console.error("Delete failed:", err);
-            alert("Failed to delete SKU.");
+            if (err.status === 403) {
+                alert("Permission denied: You do not have access to edit inventory items.");
+            } else {
+                alert("Failed to delete SKU.");
+            }
+            console.error("Failed to delete SKU:", err);
         }
     }
 });
@@ -268,17 +275,20 @@ document.getElementById("generateSkusBtn").addEventListener("click", async funct
         });
 
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        if (!res.ok) throw { status: res.status, message: data.message };
 
         alert("SKUs generated.");
         loadSkuList(itemId);
     } catch (err) {
-        console.error("Generate SKUs failed:", err);
-        alert("Failed to generate SKUs.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to generate SKUs.");
+        }
+        console.error("Failed to generate SKUs:", err);
     }
 });
 
-// ======= PATCH Item + Sync SKUs =======
 document.getElementById("editInventoryForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -297,22 +307,25 @@ document.getElementById("editInventoryForm").addEventListener("submit", async fu
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
 
-        // Call backend to sync SKUs to match quantity
-        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, {method: "POST"});
+        const data = await res.json();
+        if (!res.ok) throw { status: res.status, message: data.message };
+
+        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, { method: "POST" });
 
         alert("Item updated.");
         document.getElementById("editModal").classList.add("hidden");
         loadInventoryTable();
     } catch (err) {
-        console.error("Error updating inventory:", err);
-        alert("Failed to update item.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to update item.");
+        }
+        console.error("Failed to update inventory item:", err);
     }
 });
 
-// ======= DELETE Item =======
 document.getElementById("deleteItem").addEventListener("click", async function () {
     const itemId = document.getElementById("editItemId").value;
     if (!confirm("Are you sure you want to delete this item?")) return;
@@ -321,24 +334,23 @@ document.getElementById("deleteItem").addEventListener("click", async function (
         const res = await fetch(`/api/delete_inventory_item/${itemId}`, {
             method: "DELETE"
         });
+
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        if (!res.ok) throw { status: res.status, message: data.message };
 
         alert("Item deleted.");
         document.getElementById("editModal").classList.add("hidden");
         loadInventoryTable();
     } catch (err) {
-        console.error("Delete failed:", err);
-        alert("Failed to delete item.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to delete item.");
+        }
+        console.error("Failed to delete inventory item:", err);
     }
 });
 
-// ======= CANCEL Edit =======
-document.getElementById("cancelEdit").addEventListener("click", () => {
-    document.getElementById("editModal").classList.add("hidden");
-});
-
-// ======= SAVE ALL SKUs =======
 document.getElementById("saveAllSkusBtn").addEventListener("click", async function () {
     const itemId = document.getElementById("skuModal").dataset.itemId;
     const rows = document.querySelectorAll("#skuListContainer tbody tr");
@@ -358,30 +370,32 @@ document.getElementById("saveAllSkusBtn").addEventListener("click", async functi
             status: row.querySelector(".sku-status").value,
             expiration_date: row.querySelector(".sku-exp").value || null
         };
-
-        updates.push({skuId, payload});
+        updates.push({ skuId, payload });
     });
 
     try {
-        for (const {skuId, payload} of updates) {
+        for (const { skuId, payload } of updates) {
             const res = await fetch(`/api/update_sku/${skuId}`, {
                 method: "PATCH",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw { status: res.status, message: data.message };
         }
 
         alert("All SKUs saved.");
     } catch (err) {
-        console.error("Save All failed:", err);
-        alert("Failed to save all SKUs.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to save all SKUs.");
+        }
+        console.error("Failed to save all SKUs:", err);
     }
 });
 
-// ======= DELETE ALL SKUs =======
 document.getElementById("deleteAllSkusBtn").addEventListener("click", async function () {
     const itemId = document.getElementById("skuModal").dataset.itemId;
     const rows = document.querySelectorAll("#skuListContainer tbody tr");
@@ -402,17 +416,17 @@ document.getElementById("deleteAllSkusBtn").addEventListener("click", async func
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw { status: res.status, message: data.message };
         }
 
         alert("All SKUs deleted.");
         loadSkuList(itemId);
     } catch (err) {
-        console.error("Delete All failed:", err);
-        alert("Failed to delete all SKUs.");
+        if (err.status === 403) {
+            alert("Permission denied: You do not have access to edit inventory items.");
+        } else {
+            alert("Failed to delete all SKUs.");
+        }
+        console.error("Failed to delete all SKUs:", err);
     }
 });
-
-
-
-
