@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     organization_id INT,
+    role VARCHAR(20) NOT NULL DEFAULT 'readonly',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
