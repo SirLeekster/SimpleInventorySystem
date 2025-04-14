@@ -3,7 +3,7 @@ from backend.services import user_service, inventory_service, organization_servi
 from backend.models.user import User
 from backend.models.inventory_item import Inventory_Item
 from backend.models.inventory_sku import InventorySKU
-from backend.models.Sale import Sale
+from backend.models.sale import Sale
 from backend.database import db
 import requests
 import traceback

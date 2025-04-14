@@ -1,7 +1,7 @@
 from backend.database import db
 from backend.models.inventory_item import Inventory_Item
 from backend.models.inventory_sku import InventorySKU
-from backend.models.Sale import Sale
+from backend.models.sale import Sale
 from sqlalchemy import func
 from datetime import datetime, timedelta
 from fastapi import HTTPException
