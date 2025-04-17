@@ -7,14 +7,23 @@ import { initSettings } from './dashboard-settings.js';
 // Show and store selected section
 function showSection(sectionId) {
     const contentSections = document.querySelectorAll(".content-section");
-    contentSections.forEach(section => section.classList.add("hidden"));
+    contentSections.forEach(section => {
+        section.classList.add("hidden");
+        section.classList.remove("fade-in"); // Remove animation class if previously added
+    });
 
     const section = document.getElementById(sectionId);
     if (section) {
         section.classList.remove("hidden");
+
+        // Force reflow to restart animation
+        void section.offsetWidth;
+
+        section.classList.add("fade-in"); // Add animation
         localStorage.setItem("lastDashboardSection", sectionId);
     }
 }
+
 
 // Setup sidebar navigation
 function setupSidebarNavigation() {
