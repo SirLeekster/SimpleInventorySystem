@@ -21,7 +21,10 @@ def upc_lookup():
         return jsonify({"message": "UPC is required"}), 400
 
     try:
-        response = requests.get(f"https://api.upcitemdb.com/prod/trial/lookup?upc={upc}")
+        response = requests.get(
+            f"https://api.upcitemdb.com/prod/trial/lookup?upc={upc}",
+            proxies={"http": None, "https": None}
+        )
         data = response.json()
         if response.status_code != 200 or not data.get("items"):
             return jsonify({"message": "No data found for that UPC"}), 404
