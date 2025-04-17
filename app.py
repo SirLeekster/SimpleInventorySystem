@@ -5,6 +5,7 @@ from backend.routes.api_routes.api_inventory_routes import api_inventory_routes
 from backend.routes.api_routes.api_sales_routes import api_sales_routes
 from backend.routes.api_routes.api_settings_routes import api_settings_routes
 from backend.routes.api_routes.api_user_routes import api_user_routes
+from backend.routes.api_routes.api_suppliers_orders_routes import api_suppliers_orders_routes
 from backend.database import db
 from config import Config
 import os
@@ -33,6 +34,7 @@ app.register_blueprint(api_inventory_routes)
 app.register_blueprint(api_sales_routes)
 app.register_blueprint(api_settings_routes)
 app.register_blueprint(api_user_routes)
+app.register_blueprint(api_suppliers_orders_routes)
 
 
 if __name__ == '__main__':

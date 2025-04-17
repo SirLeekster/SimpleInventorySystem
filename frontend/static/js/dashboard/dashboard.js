@@ -3,7 +3,7 @@ import { initAddItem } from './dashboard-add-item.js';
 import { initManageItems } from './dashboard-manage-items.js';
 import { initReports } from './dashboard-reports.js';
 import { initSettings } from './dashboard-settings.js';
-
+import { initSuppliers } from './suppliers_&_orders.js';
 // Show and store selected section
 function showSection(sectionId) {
     const contentSections = document.querySelectorAll(".content-section");
@@ -55,6 +55,10 @@ function setupSidebarNavigation() {
                     showSection("settings");
                     initSettings();
                     break;
+                case "suppliersMenu": // ✅ ADDED
+                    showSection("suppliersSection");
+                    initSuppliers();
+                    break;
                 case "logoutLink":
                     localStorage.removeItem("lastDashboardSection");
                     window.location.href = "/logout";
@@ -103,8 +107,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         case "settings":
             initSettings();
             break;
+        case "suppliersSection": // ✅ ADDED
+            initSuppliers();
+            break;
         default:
             initOverview();
     }
 });
-

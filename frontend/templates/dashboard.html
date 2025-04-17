@@ -24,6 +24,7 @@
     <aside class="sidebar" id="sidebar">
         <ul class="sidebar-menu">
             <li><a href="#" id="overviewMenu"><span>Overview</span></a></li>
+            <li><a href="#" id="suppliersMenu"><span>Suppliers & Orders</span></a></li>
             <li><a href="#" id="addItemMenu"><span>Add Inventory Item</span></a></li>
             <li><a href="#" id="manageItemsMenu"><span>Manage Inventory</span></a></li>
             <li><a href="#" id="salesReportsMenu"><span>Sales Reports</span></a></li>
@@ -69,6 +70,68 @@
             </div>
         </section>
 
+        <section id="suppliersSection" class="content-section hidden">
+            <h2>Suppliers & Inventory Orders</h2>
+
+            <div class="suppliers-orders-container">
+                <!-- Suppliers List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Suppliers</h3>
+                        <button class="button small" id="addSupplierBtn">+ Add Supplier</button>
+                    </div>
+                    <div class="table-scroll-container">
+                        <table class="logs-table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="suppliersTableBody">
+                            <tr>
+                                <td colspan="6">Loading suppliers...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Orders List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Orders</h3>
+                        <button class="button small" id="placeOrderBtn">+ New Order</button>
+                    </div>
+                    <div class="table-scroll-container">
+                        <table class="logs-table">
+                            <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Item</th>
+                                <th>Supplier</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="6">Loading orders...</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <section id="addInventoryItem" class="content-section hidden">
             <h2>Add Inventory Item</h2>
             <form id="addInventoryForm">
@@ -93,7 +156,7 @@
                 <label for="price">Price:</label>
                 <input type="number" id="price" min="0" step="0.01" required>
 
-                <label for="image">Product Image:</label>
+                <label for="image">Product Image (optional):</label>
                 <div class="custom-file-input">
                     <input type="file" id="image" accept="image/*">
                     <label for="image" class="custom-file-label">Choose Image</label>
@@ -328,6 +391,128 @@
 
             <div class="sku-actions-row">
                 <button type="submit" class="button">Add SKU</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add Supplier Modal -->
+<div id="addSupplierModal" class="modal hidden">
+    <div class="modal-content">
+        <button type="button" id="closeAddSupplierModal" class="close-btn">×</button>
+        <h3>Add Supplier</h3>
+        <form id="addSupplierForm">
+            <label for="supplierName">Name</label>
+            <input type="text" id="supplierName" name="name" required>
+
+            <label for="supplierPhone">Phone</label>
+            <input type="text" id="supplierPhone" name="phone">
+
+            <label for="supplierEmail">Email</label>
+            <input type="email" id="supplierEmail" name="email">
+
+            <label for="supplierAddress">Address</label>
+            <input type="text" id="supplierAddress" name="address">
+
+            <label for="supplierDescription">Description</label>
+            <input type="text" id="supplierDescription" name="description">
+
+            <div class="modal-actions">
+                <button type="submit" class="button">Add Supplier</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Place Order Modal -->
+<div id="placeOrderModal" class="modal hidden">
+    <div class="modal-content">
+        <button type="button" id="closePlaceOrderModal" class="close-btn">×</button>
+        <h3>Place Inventory Order</h3>
+        <form id="placeOrderForm">
+            <label for="orderItemName">Item Name</label>
+            <input type="text" id="orderItemName" name="item_name" required>
+
+            <label for="orderSupplier">Supplier</label>
+            <select id="orderSupplier" name="supplier_id">
+                <option value="">Select a supplier</option>
+                <!-- Dynamically populated -->
+            </select>
+
+            <label for="orderQuantity">Quantity</label>
+            <input type="number" id="orderQuantity" name="quantity" min="1" required>
+
+            <label for="orderStatus">Status</label>
+            <select id="orderStatus" name="status">
+                <option value="pending">Pending</option>
+                <option value="fulfilled">Fulfilled</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="submit" class="button">Submit Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Edit Supplier Modal -->
+<div id="editSupplierModal" class="modal hidden">
+    <div class="modal-content">
+        <button type="button" id="closeEditSupplierModal" class="close-btn">×</button>
+        <h3>Edit Supplier</h3>
+        <form id="editSupplierForm">
+            <input type="hidden" id="editSupplierId">
+
+            <label for="editSupplierName">Name</label>
+            <input type="text" id="editSupplierName" name="name" required>
+
+            <label for="editSupplierPhone">Phone</label>
+            <input type="text" id="editSupplierPhone" name="phone">
+
+            <label for="editSupplierEmail">Email</label>
+            <input type="email" id="editSupplierEmail" name="email">
+
+            <label for="editSupplierAddress">Address</label>
+            <input type="text" id="editSupplierAddress" name="address">
+
+            <label for="editSupplierDescription">Description</label>
+            <input type="text" id="editSupplierDescription" name="description">
+
+
+            <div class="modal-actions">
+                <button type="submit" class="button">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Edit Order Modal -->
+<div id="editOrderModal" class="modal hidden">
+    <div class="modal-content">
+        <button type="button" id="closeEditOrderModal" class="close-btn">×</button>
+        <h3>Edit Order</h3>
+        <form id="editOrderForm">
+            <input type="hidden" id="editOrderId">
+
+            <label for="editOrderItemName">Item Name</label>
+            <input type="text" id="editOrderItemName" required>
+
+            <label for="editOrderSupplier">Supplier</label>
+            <select id="editOrderSupplier">
+                <option value="">Select a supplier</option>
+            </select>
+
+            <label for="editOrderQuantity">Quantity</label>
+            <input type="number" id="editOrderQuantity" min="1" required>
+
+            <label for="editOrderStatus">Status</label>
+            <select id="editOrderStatus">
+                <option value="pending">Pending</option>
+                <option value="fulfilled">Fulfilled</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+
+            <div class="modal-actions">
+                <button type="submit" class="button">Save Changes</button>
             </div>
         </form>
     </div>
