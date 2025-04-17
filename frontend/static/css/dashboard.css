@@ -463,11 +463,13 @@ section {
 
 /* Inventory Thumbnail */
 .inventory-thumbnail {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
+    width: 80px;
+    height: 80px;
+    object-fit: contain;  /* changed from 'cover' to 'contain' */
+    border-radius: 6px;
+    background-color: #fff; /* optional: adds clean padding background */
 }
+
 
 /* UPC Row */
 .upc-row {
