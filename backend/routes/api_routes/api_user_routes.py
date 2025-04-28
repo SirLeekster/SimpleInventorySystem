@@ -13,7 +13,6 @@ api_user_routes = Blueprint('api_user_routes', __name__)
 @api_user_routes.route('/api/create_user', methods=['POST'])
 def create_user():
     user_data = request.get_json()
-    print("Received user data:", user_data)
     if not user_data:
         return jsonify({"message": "No JSON received"}), 400
 
