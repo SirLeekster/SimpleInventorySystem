@@ -78,3 +78,110 @@ Frontend templates and assets served via Flask.
   - `dashboard.html`: Main user dashboard view.
   - `login.html`: Login screen layout.
   - `registration.html`: User sign-up template.
+
+
+
+
+## Self-Hosting Guide
+
+### Requirements
+
+- Python 3.10 or newer
+- MySQL 8.0+ Server
+- Git
+- Linux, WSL, or Windows (any environment that can run Python and MySQL)
+
+---
+
+## Setup Instructions
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/SirLeekster/SimpleInventorySystem.git
+   cd SimpleInventorySystem
+   ```
+
+2. **Host a MySQL Server**
+
+   Install and start a MySQL server locally or on a remote machine.  
+   [MySQL Installation Guide](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/)
+
+3. **Import the Database**
+
+   Use the provided SQL file to set up the database.  
+   This will automatically create the database, tables, and indexes.
+
+   ```bash
+   mysql -u your-username -p < backend/database/dev_database.sql
+   ```
+
+4. **Install Python and Python Dependencies**
+
+   If you do not already have Python installed, download and install it first:  
+   [Python Downloads (Windows, Mac, Linux)](https://www.python.org/downloads/)
+
+   Make sure to check "**Add Python to PATH**" during installation on Windows.
+
+   Then install project dependencies:
+
+   On **Linux or Mac**:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+   On **Windows** (recommended if `pip` is not recognized):
+
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+
+   > ⚠️ **Tip for Windows Users:**  
+   > If `pip` is not recognized, use `python -m pip` instead.  
+   > If pip is missing, you can install it by running:
+   > ```bash
+   > python -m ensurepip --upgrade
+   > ```
+
+5. **Configure the Application**
+
+   Open `config.py` and update the database settings inside the `Config` class:
+
+   ```python
+   class Config:
+       # database settings
+       DB_HOST = 'your-mysql-host'
+       DB_USER = 'your-mysql-username'
+       DB_PASSWORD = 'your-mysql-password'
+       DB_NAME = 'simpleinventorysystem'
+   ```
+
+   > ⚠️ **Important:** `config.py` contains sensitive information (database login).  
+   > Update these values before running the application.
+
+6. **Run the Application**
+
+   On **Linux or Mac**:
+
+   ```bash
+   python3 -m flask run
+   ```
+
+   On **Windows**:
+
+   ```bash
+   python -m flask run
+   ```
+
+   The app will start on `http://localhost:5000`.
+
+---
+
+## ⚠️ Security Warnings
+
+- **Database credentials** are hardcoded in `config.py`.
+- **Session management** uses Flask defaults; no custom session hardening is implemented.
+- **API is open** — there is no authentication or API key required.
+- **Forgot password feature** exists in the UI but has **no backend functionality**.
+- **No HTTPS** — the app does not natively handle HTTPS. Use a reverse proxy like NGINX if needed.
