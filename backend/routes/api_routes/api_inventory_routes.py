@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify, session
-from backend.services import user_service, inventory_service, organization_service, log_service
-from backend.models.user import User
+from backend.services import user_service, inventory_service, log_service
 from backend.models.inventory_item import Inventory_Item
 from backend.models.inventory_sku import InventorySKU
 from backend.models.sale import Sale
@@ -10,10 +9,12 @@ import traceback
 
 api_inventory_routes = Blueprint('api_inventory_routes', __name__)
 
+
 # ========================
 # INVENTORY ROUTES
 # ========================
 
+# upc lookup using external api
 @api_inventory_routes.route('/api/upc_lookup', methods=['GET'])
 def upc_lookup():
     upc = request.args.get('upc')
@@ -40,6 +41,8 @@ def upc_lookup():
     except Exception as e:
         return jsonify({"message": f"Error during UPC lookup: {str(e)}"}), 500
 
+
+# create a new inventory item
 @api_inventory_routes.route('/api/create_inventory_item', methods=['POST'])
 def create_inventory_item():
     if 'user_id' not in session:
@@ -58,6 +61,8 @@ def create_inventory_item():
         return jsonify({"message": "Inventory item created successfully", "item_id": result.id}), 201
     return jsonify({"message": "Failed to create inventory item"}), 400
 
+
+# upload an image for an inventory item
 @api_inventory_routes.route('/api/upload_inventory_image/<int:item_id>', methods=['POST'])
 def upload_inventory_image(item_id):
     if 'user_id' not in session or 'image' not in request.files:
@@ -75,6 +80,8 @@ def upload_inventory_image(item_id):
         return jsonify({"message": "Image uploaded successfully", "image_path": result}), 200
     return jsonify({"message": result}), 400
 
+
+# update quantity of an inventory item
 @api_inventory_routes.route('/api/update_inventory_quantity/<int:item_id>', methods=['PUT'])
 def update_inventory_quantity(item_id):
     if 'user_id' not in session:
@@ -98,6 +105,8 @@ def update_inventory_quantity(item_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+
+# fetch all inventory items for the logged in user's organization
 @api_inventory_routes.route('/api/inventory_items', methods=['GET'])
 def get_inventory_items():
     if 'user_id' not in session:
@@ -117,6 +126,8 @@ def get_inventory_items():
     } for item in items]
     return jsonify(data), 200
 
+
+# update fields of an inventory item
 @api_inventory_routes.route('/api/update_inventory_item/<int:item_id>', methods=['PATCH'])
 def update_inventory_item(item_id):
     if 'user_id' not in session:
@@ -145,6 +156,8 @@ def update_inventory_item(item_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to update item: {str(e)}"}), 500
 
+
+# delete an inventory item
 @api_inventory_routes.route('/api/delete_inventory_item/<int:item_id>', methods=['DELETE'])
 def delete_inventory_item(item_id):
     if 'user_id' not in session:
@@ -166,6 +179,8 @@ def delete_inventory_item(item_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to delete item: {str(e)}"}), 500
 
+
+# add a new sku to an inventory item
 @api_inventory_routes.route('/api/add_sku_to_inventory_item/<int:item_id>', methods=['POST'])
 def add_sku_to_inventory_item(item_id):
     if 'user_id' not in session:
@@ -197,6 +212,8 @@ def add_sku_to_inventory_item(item_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to add SKU: {str(e)}"}), 500
 
+
+# fetch all skus for an inventory item
 @api_inventory_routes.route('/api/inventory_item_skus/<int:item_id>', methods=['GET'])
 def fetch_skus_for_item(item_id):
     try:
@@ -213,6 +230,8 @@ def fetch_skus_for_item(item_id):
         traceback.print_exc()
         return jsonify({'message': 'Error fetching SKUs', 'error': str(e)}), 500
 
+
+# update fields of a specific sku
 @api_inventory_routes.route('/api/update_sku/<int:sku_id>', methods=['PATCH'])
 def update_sku(sku_id):
     if 'user_id' not in session:
@@ -266,6 +285,8 @@ def update_sku(sku_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to update SKU or log sale: {str(e)}"}), 500
 
+
+# delete a sku
 @api_inventory_routes.route('/api/delete_sku/<int:sku_id>', methods=['DELETE'])
 def delete_sku(sku_id):
     if 'user_id' not in session:
@@ -289,6 +310,8 @@ def delete_sku(sku_id):
         db.session.rollback()
         return jsonify({"message": f"Failed to delete SKU: {str(e)}"}), 500
 
+
+# auto-generate missing skus for an inventory item
 @api_inventory_routes.route('/api/generate_skus/<int:item_id>', methods=['POST'])
 def generate_skus(item_id):
     if 'user_id' not in session:
@@ -326,5 +349,3 @@ def generate_skus(item_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": f"Failed to generate SKUs: {str(e)}"}), 500
-
-

@@ -20,7 +20,7 @@
     </div>
 </header>
 <div class="dashboard-container">
-    <!-- Sidebar -->
+    <!-- sidebar -->
     <aside class="sidebar" id="sidebar">
         <ul class="sidebar-menu">
             <li><a href="#" id="overviewMenu"><span>Overview</span></a></li>
@@ -33,7 +33,7 @@
         </ul>
     </aside>
 
-    <!-- Main Content -->
+    <!-- main Content -->
     <main class="dashboard-content">
         <section id="dashboardOverview" class="content-section">
             <h2>Dashboard Overview</h2>
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <!-- Live Activity Log -->
+            <!-- live activity log -->
             <div class="activity-log-container">
                 <div class="activity-log-header">Recent Activity</div>
                 <div id="activity-log" class="activity-log-scroll">
@@ -74,7 +74,7 @@
             <h2>Suppliers & Inventory Orders</h2>
 
             <div class="suppliers-orders-container">
-                <!-- Suppliers List -->
+                <!-- suppliers list -->
                 <div class="card">
                     <div class="card-header">
                         <h3>Suppliers</h3>
@@ -102,7 +102,7 @@
 
                 </div>
 
-                <!-- Orders List -->
+                <!-- orders list -->
                 <div class="card">
                     <div class="card-header">
                         <h3>Orders</h3>
@@ -261,7 +261,7 @@
                         </div>
                     </form>
                 </div>
-                <!-- Organization Users -->
+                <!-- organization users -->
                 <div class="profile-card">
                     <div class="card-header">
                         <h3>Users in Your Organization</h3>
@@ -288,7 +288,7 @@
                     </div>
                 </div>
 
-                <!-- Organization Activity Logs -->
+                <!-- organization activity logs -->
                 <div class="profile-card">
                     <div class="card-header">
                         <h3>Organization Activity Logs</h3>
@@ -326,7 +326,7 @@
 <script type="module" src="{{ url_for('static', filename='js/dashboard/dashboard.js') }}"></script>
 </body>
 
-<!-- Edit Modal -->
+<!-- edit modal -->
 <div id="editModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="cancelEdit" class="close-btn">×</button>
@@ -351,7 +351,7 @@
     </div>
 </div>
 
-<!-- SKU Modal -->
+<!-- sku modal -->
 <div id="skuModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="closeSkuModal" class="close-btn">×</button>
@@ -361,7 +361,7 @@
             <p>Loading...</p>
         </div>
 
-        <!-- Bulk Save/Delete buttons -->
+        <!-- bulk save/delete buttons -->
         <div class="sku-bulk-actions">
             <div class="left-action">
                 <button type="button" id="deleteAllSkusBtn" class="delete-btn">Delete All</button>
@@ -396,7 +396,7 @@
     </div>
 </div>
 
-<!-- Add Supplier Modal -->
+<!-- add supplier modal -->
 <div id="addSupplierModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="closeAddSupplierModal" class="close-btn">×</button>
@@ -424,7 +424,7 @@
     </div>
 </div>
 
-<!-- Place Order Modal -->
+<!-- place order modal -->
 <div id="placeOrderModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="closePlaceOrderModal" class="close-btn">×</button>
@@ -436,7 +436,6 @@
             <label for="orderSupplier">Supplier</label>
             <select id="orderSupplier" name="supplier_id">
                 <option value="">Select a supplier</option>
-                <!-- Dynamically populated -->
             </select>
 
             <label for="orderQuantity">Quantity</label>
@@ -455,7 +454,7 @@
         </form>
     </div>
 </div>
-<!-- Edit Supplier Modal -->
+<!-- edit supplier modal -->
 <div id="editSupplierModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="closeEditSupplierModal" class="close-btn">×</button>
@@ -485,7 +484,7 @@
         </form>
     </div>
 </div>
-<!-- Edit Order Modal -->
+<!-- edit order modal -->
 <div id="editOrderModal" class="modal hidden">
     <div class="modal-content">
         <button type="button" id="closeEditOrderModal" class="close-btn">×</button>

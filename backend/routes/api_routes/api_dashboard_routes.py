@@ -1,11 +1,14 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, jsonify, session
 from backend.services import inventory_service, user_service
 
 api_dashboard_routes = Blueprint('api_dashboard_routes', __name__)
 
+
 # ========================
 # DASHBOARD ROUTES
 # ========================
+
+# get dashboard statistics for the user's organization
 @api_dashboard_routes.route('/api/dashboard_stats', methods=['GET'])
 def get_dashboard_stats():
     user_id = session.get('user_id')

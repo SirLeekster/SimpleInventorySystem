@@ -1,19 +1,19 @@
-// Wait for the DOM to be fully loaded
-document.addEventListener("DOMContentLoaded", function() {
+// handles login form submission and forgot password functionality
+// sends login credentials to the server and redirects on success
+// sends email for password reset instructions on user request
+
+document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("loginForm");
 
-    // Handle login form submission
-    form.addEventListener("submit", async function(e) {
-        e.preventDefault(); // Prevent default form submission
 
-        // Extract email and password from input fields
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
 
-        // Construct login request body
-        const loginData = { email, password };
+        const loginData = {email, password};
 
-        // Send login request to the backend
         try {
             const response = await fetch("/api/login", {
                 method: "POST",
@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const result = await response.json();
 
-            // On success, redirect to dashboard
             if (response.ok) {
                 alert(result.message);
                 window.location.href = "/dashboard";
@@ -39,8 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Handle "Forgot Password?" click
-// Handle "Forgot Password?" click with real backend call
+// handle "Forgot Password?" click
 document.addEventListener("DOMContentLoaded", function () {
     const forgotLink = document.querySelector(".forgot-password a");
 
@@ -54,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const response = await fetch("/api/forgot-password", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email: email.trim() })
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({email: email.trim()})
                 });
 
                 const result = await response.json();

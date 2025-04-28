@@ -7,10 +7,12 @@ import traceback
 
 api_settings_routes = Blueprint('api_settings_routes', __name__)
 
+
 # ========================
-# Settings ROUTES
+# SETTINGS ROUTES
 # ========================
 
+# get user profile information
 @api_settings_routes.route('/api/user/profile', methods=['GET'])
 def get_user_profile():
     if 'user_id' not in session:
@@ -36,6 +38,7 @@ def get_user_profile():
     }), 200
 
 
+# update user profile information
 @api_settings_routes.route('/api/user/profile', methods=['PATCH'])
 def update_user_profile():
     if 'user_id' not in session:
@@ -71,6 +74,7 @@ def update_user_profile():
         return jsonify({"message": f"Failed to update profile: {str(e)}"}), 500
 
 
+# change user password
 @api_settings_routes.route('/api/user/password', methods=['POST'])
 def change_user_password():
     if 'user_id' not in session:
@@ -97,6 +101,7 @@ def change_user_password():
         return jsonify({"message": f"Failed to change password: {str(e)}"}), 500
 
 
+# get all users in the user's organization
 @api_settings_routes.route('/api/org/users', methods=['GET'])
 def get_users_for_organization():
     if 'user_id' not in session:
@@ -118,18 +123,21 @@ def get_users_for_organization():
     return jsonify({"users": result}), 200
 
 
+# get all logs for the user's organization
 @api_settings_routes.route('/api/org/logs', methods=['GET'])
 def get_all_logs_for_organization():
     if 'user_id' not in session:
         return jsonify({"message": "Not authenticated"}), 401
 
     user = user_service.get_user_by_id(session['user_id'])
-    if not user or not user_service.user_has_role(user.user_id, ['admin','staff']):
+    if not user or not user_service.user_has_role(user.user_id, ['admin', 'staff']):
         return jsonify({"message": "Access denied"}), 403
 
     logs = log_service.get_all_logs_for_org(user.organization_id)
     return jsonify({"logs": logs}), 200
 
+
+# promote a user to a new role
 @api_settings_routes.route('/api/promote_user', methods=['PATCH'])
 def promote_user_route():
     if 'user_id' not in session:
@@ -160,6 +168,8 @@ def promote_user_route():
         return jsonify({"message": "Invalid role"}), 400
     return jsonify({"message": "Promotion failed"}), 500
 
+
+# delete a user
 @api_settings_routes.route('/api/user/<int:user_id>', methods=['DELETE'])
 def delete_user_route(user_id):
     if 'user_id' not in session:
@@ -185,6 +195,7 @@ def delete_user_route(user_id):
     if result == "self_delete":
         return jsonify({"message": "You cannot delete your own account"}), 400
     return jsonify({"message": "User deletion failed"}), 500
+
 
 # ========================
 # Debug / Testing Routes

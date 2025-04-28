@@ -1,5 +1,9 @@
 from backend.database import db
 
+"""
+this class defines the suppliers table using sqlalchemy orm.
+"""
+
 class Supplier(db.Model):
     __tablename__ = 'suppliers'
 
@@ -9,5 +13,4 @@ class Supplier(db.Model):
     email = db.Column(db.String(255), nullable=True)
     address = db.Column(db.String(255), nullable=True)
     description = db.Column(db.Text, nullable=True)
-
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())

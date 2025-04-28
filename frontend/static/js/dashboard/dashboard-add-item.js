@@ -1,6 +1,7 @@
-// ==============================
-// Add Inventory Item Section
-// ==============================
+// handles adding new inventory items from the dashboard
+// submits item data and optional image upload to the server
+// supports upc lookup to autofill product information
+
 
 export function initAddItem() {
     const form = document.getElementById("addInventoryForm");
@@ -47,7 +48,7 @@ async function handleAddItemSubmit(e) {
     try {
         const response = await fetch("/api/create_inventory_item", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(payload)
         });
 

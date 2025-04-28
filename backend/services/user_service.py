@@ -3,6 +3,8 @@ from backend.database import db
 from backend.services import organization_service
 import werkzeug.security
 
+
+# add a new user to the database
 def add_user_to_db(user_data):
     try:
         full_name = user_data.get('full_name')
@@ -22,23 +24,22 @@ def add_user_to_db(user_data):
         if not organization_name:
             return "missing_org_name"
 
-        # ✅ Determine role based on org creation or join
         if org_choice == "create":
             role = "admin"
         else:
             role = "readonly"
 
-        # Create user without org_id yet
+        # create user without org_id yet
         new_user = User(
             full_name=full_name,
             username=username,
             email=email,
             password_hash=werkzeug.security.generate_password_hash(password),
             organization_id=None,
-            role=role  # ✅ Set role here
+            role=role
         )
         db.session.add(new_user)
-        db.session.flush()  # get user_id without full commit
+        db.session.flush()
 
         if org_choice == "create":
             org = organization_service.get_organization_by_name(organization_name)
@@ -49,7 +50,6 @@ def add_user_to_db(user_data):
             if org is None:
                 return "organization_not_found"
 
-        # Now assign the user's organization_id and commit
         new_user.organization_id = org.organization_id
         db.session.commit()
         return new_user
@@ -60,6 +60,8 @@ def add_user_to_db(user_data):
             return "duplicate"
         return "internal_error"
 
+
+# log in a user by verifying credentials
 def login_user(login_data):
     try:
         email = login_data.get("email")
@@ -68,21 +70,27 @@ def login_user(login_data):
             return False
 
         user = db.session.query(User).filter_by(email=email).first()
-        
-        # Use werkzeug's check_password_hash for proper password verification
+
+        # using werkzeug's check_password_hash for proper password verification
         if user and werkzeug.security.check_password_hash(user.password_hash, password):
             return user
         return False
     except Exception as e:
-        print(f"Login error: {e}")  # Add this for debugging
+        print(f"Login error: {e}")
         return False
-    
+
+
+# get a user by id
 def get_user_by_id(user_id):
     return User.query.get(user_id)
 
+
+# get a user by email
 def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
+
+# check if a user has one of the required roles
 def user_has_role(user_id, required_roles):
     user = get_user_by_id(user_id)
     if not user:
@@ -90,7 +98,7 @@ def user_has_role(user_id, required_roles):
     return user.role in required_roles
 
 
-
+# promote a user to a new role
 def promote_user(user_id, new_role, admin_user):
     if new_role not in ['admin', 'staff', 'readonly']:
         return "invalid_role"
@@ -109,6 +117,7 @@ def promote_user(user_id, new_role, admin_user):
     return {"status": "success", "old_role": old_role, "new_role": new_role, "target_user": target_user}
 
 
+# delete a user
 def delete_user(user_id, admin_user):
     target_user = get_user_by_id(user_id)
     if not target_user:

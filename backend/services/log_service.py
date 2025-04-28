@@ -2,6 +2,8 @@ from backend.database import db
 from backend.models.user_log import UserLog
 from backend.models.user import User
 
+
+# log a user's action
 def log_user_action(user_id, action_text):
     try:
         new_log = UserLog(user_id=user_id, action=action_text)
@@ -11,6 +13,8 @@ def log_user_action(user_id, action_text):
         print(f"Log Insert Failed: {e}")
         db.session.rollback()
 
+
+# get recent logs for an organization
 def get_recent_logs_for_org(organization_id, limit=5):
     logs = (
         db.session.query(UserLog, User.username)
@@ -32,8 +36,8 @@ def get_recent_logs_for_org(organization_id, limit=5):
     return result
 
 
+# get all logs for an organization
 def get_all_logs_for_org(organization_id: int):
-    # Return list of dicts, not raw model tuples
     logs = (
         db.session.query(UserLog, User)
         .join(User, User.user_id == UserLog.user_id)

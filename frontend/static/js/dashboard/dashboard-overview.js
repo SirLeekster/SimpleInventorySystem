@@ -1,6 +1,6 @@
-// ==========================
-// Dashboard Overview Section
-// ==========================
+// handles loading dashboard overview stats and recent activity logs
+// fetches key metrics like inventory, sales, top item, and new additions
+// displays recent user actions with emoji indicators for better readability
 
 export function initOverview() {
     loadDashboardStats();
@@ -48,7 +48,6 @@ function loadActivityLog() {
                 const item = document.createElement('li');
                 item.className = 'log-item';
                 item.textContent = `${emoji} | User: ${user} | Action: ${log.action} | Performed at ${timestamp}`;
-
 
 
                 list.appendChild(item);

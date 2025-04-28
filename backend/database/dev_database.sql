@@ -1,7 +1,10 @@
+-- create database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS simpleinventorysystem;
 
+-- select the database to use
 USE simpleinventorysystem;
 
+-- create users table
 CREATE TABLE IF NOT EXISTS users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(150) NOT NULL,
@@ -13,6 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- create organizations table
 CREATE TABLE IF NOT EXISTS organizations (
     organization_id INT AUTO_INCREMENT PRIMARY KEY,
     organization_name VARCHAR(100) NOT NULL UNIQUE,
@@ -22,10 +26,12 @@ CREATE TABLE IF NOT EXISTS organizations (
         ON DELETE SET NULL
 );
 
+-- add foreign key from users to organizations
 ALTER TABLE users
 ADD FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
     ON DELETE CASCADE;
 
+-- create user logs table
 CREATE TABLE IF NOT EXISTS user_logs (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
@@ -34,11 +40,12 @@ CREATE TABLE IF NOT EXISTS user_logs (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- create inventory table
 CREATE TABLE IF NOT EXISTS inventory (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     product_name TEXT NOT NULL,
     description TEXT DEFAULT NULL,
-    category VARCHAR(50) DEFAULT 'General',
+    category VARCHAR(50) DEFAULT 'general',
     quantity INTEGER NOT NULL,
     price REAL NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
@@ -51,32 +58,33 @@ CREATE TABLE IF NOT EXISTS inventory (
     FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
 
+-- create inventory skus table
 CREATE TABLE IF NOT EXISTS inventory_skus (
     sku_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     inventory_id INTEGER NOT NULL,
     sku_code VARCHAR(100) NOT NULL UNIQUE,
     serial_number VARCHAR(100) DEFAULT NULL,
-    status VARCHAR(50) DEFAULT 'in_stock', -- e.g., in_stock, sold, damaged, etc.
+    status VARCHAR(50) DEFAULT 'in_stock',
     expiration_date DATE DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (inventory_id) REFERENCES inventory(id)
         ON DELETE CASCADE
 );
 
+-- create sales table
 CREATE TABLE IF NOT EXISTS sales (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     inventory_id INTEGER NOT NULL,
-    sku_id BIGINT NOT NULL,  -- ✅ Add this
+    sku_id BIGINT NOT NULL,
     organization_id INTEGER NOT NULL,
     price REAL NOT NULL,
     sold_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (inventory_id) REFERENCES inventory(id),
-
     FOREIGN KEY (sku_id) REFERENCES inventory_skus(sku_id)
-		ON DELETE CASCADE
+        ON DELETE CASCADE
 );
 
+-- create suppliers table
 CREATE TABLE IF NOT EXISTS suppliers  (
     supplier_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -87,7 +95,7 @@ CREATE TABLE IF NOT EXISTS suppliers  (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- create inventory orders table
 CREATE TABLE IF NOT EXISTS inventory_orders (
     order_id INT AUTO_INCREMENT PRIMARY KEY,
     item_name VARCHAR(255) NOT NULL,
@@ -98,8 +106,7 @@ CREATE TABLE IF NOT EXISTS inventory_orders (
     FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id)
 );
 
-
-
+-- create indexes for faster lookups
 CREATE INDEX idx_email ON users(email);
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_org_id ON users(organization_id);

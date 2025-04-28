@@ -3,9 +3,12 @@ from backend.services import user_service, report_service
 
 api_sales_routes = Blueprint('api_sales_routes', __name__)
 
+
 # ========================
-# Sales Report ROUTES
+# SALES REPORT ROUTES
 # ========================
+
+# get sales report for the user's organization
 @api_sales_routes.route("/api/sales_report", methods=['GET'])
 def get_sales_report():
     if 'user_id' not in session:

@@ -1,31 +1,35 @@
-import { initOverview } from './dashboard-overview.js';
-import { initAddItem } from './dashboard-add-item.js';
-import { initManageItems } from './dashboard-manage-items.js';
-import { initReports } from './dashboard-reports.js';
-import { initSettings } from './dashboard-settings.js';
-import { initSuppliers } from './suppliers_&_orders.js';
-// Show and store selected section
+// handles dashboard navigation and section switching
+// initializes page specific logic based on sidebar selection
+// saves last visited section in local storage and restores it on reload
+// loads current user role from server to adjust access control
+
+
+import {initOverview} from './dashboard-overview.js';
+import {initAddItem} from './dashboard-add-item.js';
+import {initManageItems} from './dashboard-manage-items.js';
+import {initReports} from './dashboard-reports.js';
+import {initSettings} from './dashboard-settings.js';
+import {initSuppliers} from './suppliers_&_orders.js';
+
 function showSection(sectionId) {
     const contentSections = document.querySelectorAll(".content-section");
     contentSections.forEach(section => {
         section.classList.add("hidden");
-        section.classList.remove("fade-in"); // Remove animation class if previously added
+        section.classList.remove("fade-in");
     });
 
     const section = document.getElementById(sectionId);
     if (section) {
         section.classList.remove("hidden");
 
-        // Force reflow to restart animation
         void section.offsetWidth;
 
-        section.classList.add("fade-in"); // Add animation
+        section.classList.add("fade-in");
         localStorage.setItem("lastDashboardSection", sectionId);
     }
 }
 
 
-// Setup sidebar navigation
 function setupSidebarNavigation() {
     const sidebarLinks = document.querySelectorAll(".sidebar-menu li a");
 
@@ -55,7 +59,7 @@ function setupSidebarNavigation() {
                     showSection("settings");
                     initSettings();
                     break;
-                case "suppliersMenu": // ✅ ADDED
+                case "suppliersMenu":
                     showSection("suppliersSection");
                     initSuppliers();
                     break;
@@ -71,7 +75,6 @@ function setupSidebarNavigation() {
     });
 }
 
-// Initial load
 document.addEventListener("DOMContentLoaded", async () => {
     setupSidebarNavigation();
 
@@ -107,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         case "settings":
             initSettings();
             break;
-        case "suppliersSection": // ✅ ADDED
+        case "suppliersSection":
             initSuppliers();
             break;
         default:

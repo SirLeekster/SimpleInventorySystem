@@ -1,3 +1,15 @@
+// ==========================
+// suppliers and orders management module
+// ==========================
+// handles all supplier and order functionalities including:
+// - adding, editing, deleting suppliers and orders
+// - loading suppliers and orders into tables
+// - opening/closing modals for suppliers and orders
+// - submitting supplier and order forms
+// - dynamic dropdown population for suppliers
+// - inline actions like edit/delete for each table row
+
+
 export function initSuppliers() {
     loadSuppliers();
     loadOrders();
@@ -190,7 +202,7 @@ function setupSupplierRowActions() {
             const id = target.dataset.id;
             if (!confirm("Delete this supplier?")) return;
 
-            fetch(`/api/delete_supplier/${id}`, { method: "DELETE" })
+            fetch(`/api/delete_supplier/${id}`, {method: "DELETE"})
                 .then(res => res.json())
                 .then(data => {
                     if (!data.message.toLowerCase().includes("deleted")) throw new Error(data.message);
@@ -232,7 +244,7 @@ function setupOrderRowActions() {
             if (!confirm("Delete this order?")) return;
 
             try {
-                const res = await fetch(`/api/delete_order/${id}`, { method: "DELETE" });
+                const res = await fetch(`/api/delete_order/${id}`, {method: "DELETE"});
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message);
                 alert("Order deleted.");

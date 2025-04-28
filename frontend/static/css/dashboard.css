@@ -1,5 +1,15 @@
-/* Dashboard container layout */
+/*
+==============================================================
+ Dashboard Stylesheet - Main Dashboard UI
+--------------------------------------------------------------
+this file contains all styling related to the user dashboard,
+including layout, cards, widgets, tables, buttons, and sections.
+keep this file focused only on dashboard-specific elements.
+do not mix login, registration, or other unrelated page styles here.
+==============================================================
+*/
 
+/* animation styles */
 .fade-in {
     animation: fadeIn 0.3s ease-in-out;
 }
@@ -15,7 +25,7 @@
     }
 }
 
-
+/* header styles */
 header {
     background: linear-gradient(to right, #2a2a2a, #3a3a3a);
     color: #ffffff;
@@ -35,11 +45,10 @@ header {
 
 .logo-left {
     position: absolute;
-    left: 30px; /* was 20px */
+    left: 30px;
     top: 50%;
     transform: translateY(-50%);
 }
-
 
 .header-logo {
     height: 50px;
@@ -51,27 +60,25 @@ header {
     font-size: 1.8rem;
 }
 
-
+/* main layout container */
 .dashboard-container {
     display: flex;
-    flex-direction: column; /* ⬅️ key change */
+    flex-direction: column;
     min-height: calc(100vh - 100px);
 }
 
-
+/* sidebar navigation */
 .sidebar {
     background-color: #f4f4f4;
     color: #333;
-    width: 100%;            /* ⬅️ spans the full width */
-    border-bottom: 1px solid #ccc; /* ⬅️ horizontal border now */
+    width: 100%;
+    border-bottom: 1px solid #ccc;
     border-right: none;
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: flex-start;  /* ⬅️ align items to the left */
+    justify-content: flex-start;
 }
-
-
 
 .sidebar-menu {
     list-style: none;
@@ -83,13 +90,10 @@ header {
     width: 100%;
 }
 
-
-
 .sidebar-menu li {
-    flex: 1; /* ⬅️ each li takes equal space */
+    flex: 1;
     text-align: center;
 }
-
 
 .sidebar-menu li a {
     display: block;
@@ -102,15 +106,14 @@ header {
 }
 
 .sidebar-menu li:last-child a {
-    border-right: none;  /* prevent last item from having a right border */
+    border-right: none;
 }
 
 .sidebar-menu li a:hover {
     background-color: #ddd;
 }
 
-
-/* Dashboard content */
+/* dashboard content area */
 .dashboard-content {
     flex-grow: 1;
     padding: 40px;
@@ -121,7 +124,6 @@ header {
     box-sizing: border-box;
 }
 
-/* Section container */
 section {
     width: 100%;
     max-width: 1200px;
@@ -132,7 +134,7 @@ section {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Stats layout */
+/* statistics and summary cards */
 .stats-group {
     display: flex;
     flex-direction: column;
@@ -156,7 +158,7 @@ section {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Inventory Table Styling */
+/* inventory table styles */
 .inventory-table {
     width: 100%;
     border-collapse: collapse;
@@ -188,14 +190,25 @@ section {
     text-align: center;
 }
 
-/* Modal styles */
+.inventory-table td:nth-child(3) {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.inventory-table td:nth-child(3):hover {
+    cursor: help;
+}
+
+/* modal and popup styles */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -215,9 +228,8 @@ section {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     max-height: 80vh;
     overflow-y: auto;
-    position: relative; /* ✅ This is key */
+    position: relative;
 }
-
 
 .modal-content h3 {
     margin-top: 0;
@@ -245,11 +257,12 @@ section {
     color: #333;
 }
 
+/* sku actions and bulk operations */
 .sku-bulk-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
     margin: 20px 0;
+    gap: 10px;
 }
 
 .left-action,
@@ -267,14 +280,14 @@ section {
     justify-content: flex-end;
 }
 
-
+/* buttons and utility classes */
 .delete-btn {
     background: #dc3545 !important;
     color: white !important;
-    padding: 10px 15px; /* Match .button size */
-    font-size: 14px;    /* Match .button text */
+    padding: 10px 15px;
+    font-size: 14px;
     border: none;
-    border-radius: 4px; /* Match .button radius */
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
     line-height: 1.5;
@@ -286,57 +299,8 @@ section {
     line-height: 1.2;
 }
 
-
 .delete-btn:hover {
     background: #c82333;
-}
-
-/* Settings styles */
-.settings-container {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.settings-card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.settings-card h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #555;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.form-group input:disabled {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
 }
 
 .button {
@@ -369,17 +333,67 @@ section {
     background-color: #e0e0e0;
 }
 
+/* form and input field styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
 .form-actions {
     display: flex;
     gap: 10px;
     margin-top: 20px;
 }
 
+/* settings and profile sections */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.settings-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.settings-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+/* hidden utility */
 .hidden {
     display: none;
 }
 
-/* Profile styles */
+/* profile page styles */
 .profile-container {
     max-width: 800px;
     margin: 0 auto;
@@ -424,7 +438,7 @@ section {
     color: #333;
 }
 
-/* Custom File Input */
+/* custom file input styles */
 .custom-file-input {
     position: relative;
     display: inline-block;
@@ -461,17 +475,16 @@ section {
     background-color: #f4f4f4;
 }
 
-/* Inventory Thumbnail */
+/* inventory thumbnails */
 .inventory-thumbnail {
     width: 80px;
     height: 80px;
-    object-fit: contain;  /* changed from 'cover' to 'contain' */
+    object-fit: contain;
     border-radius: 6px;
-    background-color: #fff; /* optional: adds clean padding background */
+    background-color: #fff;
 }
 
-
-/* UPC Row */
+/* upc row styles */
 .upc-row {
     display: flex;
     gap: 10px;
@@ -489,19 +502,7 @@ section {
     margin-top: -10px;
 }
 
-/* Inventory Table Column 3 */
-.inventory-table td:nth-child(3) {
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.inventory-table td:nth-child(3):hover {
-    cursor: help;
-}
-
-/* SKU Form Styling */
+/* sku form styles */
 .sku-form {
     margin-top: 20px;
     padding-top: 15px;
@@ -533,18 +534,11 @@ section {
     margin-top: 15px;
 }
 
-.sku-bulk-actions {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    gap: 10px;
-}
-
 .sku-btn {
     margin-top: 15px;
 }
 
-/* Search Row */
+/* search and filtering */
 .search-row {
     margin-bottom: 1rem;
 }
@@ -555,7 +549,7 @@ section {
     font-size: 1rem;
 }
 
-/* Activity Log Container & Items */
+/* activity log panel */
 .activity-log-container {
     margin-top: 20px;
     background: #ecf0f1;
@@ -582,7 +576,7 @@ section {
 
 .activity-log-scroll {
     overflow-y: auto;
-    overflow-x: auto; /* ✅ enable horizontal scroll */
+    overflow-x: auto;
     max-height: 250px;
     padding: 10px 40px;
     display: flex;
@@ -590,20 +584,18 @@ section {
     gap: 6px;
 }
 
-
 #activity-log {
-    overflow-x: auto;   /* Enables horizontal scroll */
-    overflow-y: auto;   /* Keeps vertical scroll */
+    overflow-x: auto;
+    overflow-y: auto;
     width: 100%;
 }
 
 .log-items-wrapper {
-    min-width: 1200px;  /* Force it to be wider than container */
+    min-width: 1200px;
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
-
 
 .log-item {
     font-size: 0.9em;
@@ -617,13 +609,11 @@ section {
     min-width: max-content;
 }
 
-
-
 .log-item:last-child {
     border-bottom: none;
 }
 
-/* Logs Table (for Organization Logs) */
+/* logs and report tables */
 .logs-table-container {
     max-height: 400px;
     overflow-y: auto;
@@ -631,6 +621,34 @@ section {
     border: 1px solid #ccc;
     border-radius: 6px;
 }
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    font-family: monospace;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.logs-table th {
+    background-color: #f9f9f9;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.logs-table tr:hover {
+    background-color: #f4f4f4;
+}
+
+/* report dashboard components */
 .report-summary {
     display: flex;
     justify-content: space-around;
@@ -654,12 +672,6 @@ section {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
-.logs-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 800px;
-    font-family: monospace;
-}
 
 .report-controls {
     display: flex;
@@ -675,26 +687,8 @@ section {
     border-radius: 4px;
     border: 1px solid #ccc;
 }
-.logs-table th,
-.logs-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-    white-space: nowrap;
-}
 
-.logs-table th {
-    background-color: #f9f9f9;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-
-.logs-table tr:hover {
-    background-color: #f4f4f4;
-}
-
-/* Card Header & Search - Used in Users and Logs Cards */
+/* suppliers and order management */
 .card-header {
     display: flex;
     justify-content: space-between;
@@ -721,15 +715,17 @@ section {
 #placeOrderBtn {
     margin-top: 0.2in;
 }
+
 .suppliers-orders-container .card + .card {
     margin-top: 100px;
 }
 
+/* general utility containers */
 .table-scroll-container {
     overflow-x: auto;
     width: 100%;
 }
-.logs-table {
-    min-width: 1000px; /* or higher if needed */
-}
 
+.logs-table {
+    min-width: 1000px;
+}

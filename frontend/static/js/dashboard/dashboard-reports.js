@@ -1,6 +1,6 @@
-// ==========================
-// Reports Section
-// ==========================
+// handles loading and displaying sales reports in the dashboard
+// fetches sales summary and trend data based on selected date range
+// renders interactive sales trend charts using chart.js
 
 export function initReports() {
     const reportsContainer = document.getElementById("reportsContent");
@@ -34,7 +34,7 @@ export function initReports() {
         fetchAndRenderReport(rangeSelect.value);
     });
 
-    fetchAndRenderReport("7d"); // Default on load
+    fetchAndRenderReport("7d");
 }
 
 function fetchAndRenderReport(range) {
@@ -79,7 +79,7 @@ function renderChart(trendData) {
         options: {
             responsive: true,
             plugins: {
-                legend: { display: false },
+                legend: {display: false},
                 tooltip: {
                     callbacks: {
                         label: context => `$${context.parsed.y.toFixed(2)}`
@@ -91,7 +91,7 @@ function renderChart(trendData) {
                     title: {
                         display: true,
                         text: "Date",
-                        font: { weight: "bold" }
+                        font: {weight: "bold"}
                     },
                     ticks: {
                         maxRotation: 45,
@@ -103,7 +103,7 @@ function renderChart(trendData) {
                     title: {
                         display: true,
                         text: "Revenue ($)",
-                        font: { weight: "bold" }
+                        font: {weight: "bold"}
                     }
                 }
             }

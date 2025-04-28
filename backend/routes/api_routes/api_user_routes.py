@@ -4,6 +4,12 @@ from backend.models.user import User
 
 api_user_routes = Blueprint('api_user_routes', __name__)
 
+
+# ======================
+# USER ROUTES
+# ======================
+
+# create a new user
 @api_user_routes.route('/api/create_user', methods=['POST'])
 def create_user():
     user_data = request.get_json()
@@ -22,6 +28,7 @@ def create_user():
         return jsonify({"message": "Failed to create user"}), 400
 
 
+# log in a user
 @api_user_routes.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -33,6 +40,7 @@ def login():
         return jsonify({"message": "Invalid email or password"}), 401
 
 
+# placeholder for forgot password functionality
 @api_user_routes.route('/api/forgot-password', methods=['POST'])
 def forgot_password():
     data = request.get_json()
@@ -41,5 +49,5 @@ def forgot_password():
     if not email:
         return jsonify({"message": "Email is required"}), 400
 
-    # Implement real password reset/email system
+    # need to implement real password reset/email system
     return jsonify({"message": f"Reset instructions sent to {email}"}), 200

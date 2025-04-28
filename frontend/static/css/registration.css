@@ -1,3 +1,15 @@
+/*
+==============================================================
+ Registration Stylesheet - Registration Page UI
+--------------------------------------------------------------
+this file contains all styling related to the user registration page,
+including the registration form, input fields, buttons, layout,
+success messages, and basic responsive behavior.
+keep this file focused only on registration page styles.
+==============================================================
+*/
+
+
 header {
     background: linear-gradient(to right, #2a2a2a, #3a3a3a);
     color: #ffffff;
@@ -17,7 +29,7 @@ header {
 
 .logo-left {
     position: absolute;
-    left: 30px; /* was 20px */
+    left: 30px;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -33,9 +45,6 @@ header {
     font-size: 1.8rem;
 }
 
-
-
-
 section {
     background: #ffffff;
     padding: 30px;
@@ -43,6 +52,6 @@ section {
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
     width: 100%;
     max-width: 500px;
-    margin: 0 auto; /* fallback horizontal centering */
+    margin: 0 auto;
 }
 

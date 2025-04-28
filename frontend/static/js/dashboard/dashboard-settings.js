@@ -1,6 +1,9 @@
 // ==========================
-// Settings / Account Section
+// user settings and management module
 // ==========================
+// handles user profile editing, password changes, organization user management,
+// log viewing, role updates, and user deletions. also supports searching/filtering users and logs.
+
 
 export function initSettings() {
     loadUserData();
@@ -70,7 +73,6 @@ function loadUserData() {
             document.getElementById('displayEmail').textContent = data.email || 'N/A';
             document.getElementById('displayOrganization').textContent = data.organization_name || 'N/A';
 
-            // 🔐 Store role globally
             window.currentUserRole = data.role;
             window.isAdmin = data.role === 'admin';
         })
@@ -184,7 +186,6 @@ function loadAllUsers() {
                         if (confirm(`Are you sure you want to change ${user.username}'s role to "${selectedRole}"?`)) {
                             updateUserRole(user.user_id, selectedRole);
                         } else {
-                            // Reset dropdown to previous role
                             roleSelect.value = user.role;
                         }
                     });
@@ -232,10 +233,9 @@ function updateUserRole(userId, role) {
         .then(data => {
             alert(data.message || "User role updated.");
 
-            // ✅ Delay the reload slightly to let DB commit finish
             setTimeout(() => {
                 loadAllUsers();
-            }, 150); // 150ms buffer
+            }, 150);
         })
         .catch(err => {
             console.error('Failed to update role:', err);

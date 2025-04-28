@@ -19,7 +19,6 @@ Contains all backend logic and structure for the Flask server.
 
 - **`database/`** – Database-related files:
   - `__init__.py`: Initializes the database package.
-  - `database.py`: Handles DB connection.
   - `dev_database.sql`: SQL script for development DB schema.
 
 - **`models/`** – ORM models (SQLAlchemy):
@@ -27,15 +26,29 @@ Contains all backend logic and structure for the Flask server.
   - `organization.py`: Organization table.
   - `inventory_item.py`: Inventory item schema.
   - `inventory_sku.py`: SKU table (individual units).
+  - `inventory_order.py`: Tracks supplier inventory orders.
+  - `user_log.py`: Logs user actions (e.g., login, edits).
+  - `sale.py`: Sales records for inventory items.
+  - `supplier.py`: Supplier details for inventory sourcing.
 
 - **`routes/`** – Flask route handlers:
   - `main_routes.py`: Serves HTML templates.
-  - `api_routes.py`: API endpoints for inventory, users, auth, SKUs, etc.
+  - **`api_routes/`**:
+    - `api_dashboard_routes.py`: Dashboard overview data.
+    - `api_inventory_routes.py`: CRUD for inventory items and SKUs.
+    - `api_sales_routes.py`: API for sales and purchase records.
+    - `api_settings_routes.py`: Handles user settings updates.
+    - `api_suppliers_orders_routes.py`: Supplier and order operations.
+    - `api_user_routes.py`: Registration, login, user management.
 
 - **`services/`** – Core business logic:
   - `user_service.py`: User account operations.
   - `organization_service.py`: Org-level functionality.
   - `inventory_service.py`: Inventory & SKU logic and helpers.
+  - `inventory_order_service.py`: Handles supplier order processing.
+  - `log_service.py`: Handles recording and retrieving user logs.
+  - `report_service.py`: Compiles reports and analytics.
+  - `supplier_service.py`: Handles suppliers and inventory ordering.
 
 ---
 

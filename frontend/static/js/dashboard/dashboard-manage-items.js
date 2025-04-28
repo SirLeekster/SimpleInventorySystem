@@ -1,6 +1,7 @@
-// ==========================
-// Manage Inventory Section
-// ==========================
+// handles managing inventory items and skus in the dashboard
+// loads inventory list, supports search, edit, delete, and sku management
+// provides full functionality for adding, updating, and removing skus
+
 
 export function initManageItems() {
     loadInventoryTable();
@@ -185,7 +186,7 @@ document.getElementById("addSkuForm").addEventListener("submit", async function 
         });
 
         const data = await res.json();
-        if (!res.ok) throw { status: res.status, message: data.message };
+        if (!res.ok) throw {status: res.status, message: data.message};
 
         alert("SKU added.");
         this.reset();
@@ -222,7 +223,7 @@ document.getElementById("skuListContainer").addEventListener("click", async func
                 body: JSON.stringify(payload)
             });
             const data = await res.json();
-            if (!res.ok) throw { status: res.status, message: data.message };
+            if (!res.ok) throw {status: res.status, message: data.message};
 
             alert("SKU updated.");
             loadInventoryTable();
@@ -240,9 +241,9 @@ document.getElementById("skuListContainer").addEventListener("click", async func
         if (!confirm("Delete this SKU?")) return;
 
         try {
-            const res = await fetch(`/api/delete_sku/${skuId}`, { method: "DELETE" });
+            const res = await fetch(`/api/delete_sku/${skuId}`, {method: "DELETE"});
             const data = await res.json();
-            if (!res.ok) throw { status: res.status, message: data.message };
+            if (!res.ok) throw {status: res.status, message: data.message};
 
             alert("SKU deleted.");
             loadSkuList(itemId);
@@ -275,7 +276,7 @@ document.getElementById("generateSkusBtn").addEventListener("click", async funct
         });
 
         const data = await res.json();
-        if (!res.ok) throw { status: res.status, message: data.message };
+        if (!res.ok) throw {status: res.status, message: data.message};
 
         alert("SKUs generated.");
         loadSkuList(itemId);
@@ -309,9 +310,9 @@ document.getElementById("editInventoryForm").addEventListener("submit", async fu
         });
 
         const data = await res.json();
-        if (!res.ok) throw { status: res.status, message: data.message };
+        if (!res.ok) throw {status: res.status, message: data.message};
 
-        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, { method: "POST" });
+        await fetch(`/api/generate_skus/${itemId}?count=${payload.quantity}`, {method: "POST"});
 
         alert("Item updated.");
         document.getElementById("editModal").classList.add("hidden");
@@ -336,7 +337,7 @@ document.getElementById("deleteItem").addEventListener("click", async function (
         });
 
         const data = await res.json();
-        if (!res.ok) throw { status: res.status, message: data.message };
+        if (!res.ok) throw {status: res.status, message: data.message};
 
         alert("Item deleted.");
         document.getElementById("editModal").classList.add("hidden");
@@ -370,19 +371,19 @@ document.getElementById("saveAllSkusBtn").addEventListener("click", async functi
             status: row.querySelector(".sku-status").value,
             expiration_date: row.querySelector(".sku-exp").value || null
         };
-        updates.push({ skuId, payload });
+        updates.push({skuId, payload});
     });
 
     try {
-        for (const { skuId, payload } of updates) {
+        for (const {skuId, payload} of updates) {
             const res = await fetch(`/api/update_sku/${skuId}`, {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(payload)
             });
 
             const data = await res.json();
-            if (!res.ok) throw { status: res.status, message: data.message };
+            if (!res.ok) throw {status: res.status, message: data.message};
         }
 
         alert("All SKUs saved.");
@@ -416,7 +417,7 @@ document.getElementById("deleteAllSkusBtn").addEventListener("click", async func
             });
 
             const data = await res.json();
-            if (!res.ok) throw { status: res.status, message: data.message };
+            if (!res.ok) throw {status: res.status, message: data.message};
         }
 
         alert("All SKUs deleted.");

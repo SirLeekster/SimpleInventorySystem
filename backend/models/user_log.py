@@ -1,5 +1,10 @@
 from backend.database import db
 
+"""
+this class defines the user_logs table using sqlalchemy orm.
+"""
+
+
 class UserLog(db.Model):
     __tablename__ = 'user_logs'
 

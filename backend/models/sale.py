@@ -1,6 +1,10 @@
 from backend.database import db
 from datetime import datetime
 
+"""
+this class defines the sales table using sqlalchemy orm.
+"""
+
 class Sale(db.Model):
     __tablename__ = 'sales'
 

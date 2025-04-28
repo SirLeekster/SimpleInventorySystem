@@ -1,5 +1,9 @@
 from backend.database import db
 
+"""
+this class defines the inventory table using sqlalchemy orm.
+"""
+
 class Inventory_Item(db.Model):
     __tablename__ = 'inventory'
 
@@ -10,11 +14,8 @@ class Inventory_Item(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
-
-    image_path = db.Column(db.Text, nullable=True)  # <- NEW FIELD
-
+    image_path = db.Column(db.Text, nullable=True)
     created_by = db.Column(db.BigInteger, db.ForeignKey('users.user_id', ondelete='SET NULL'), nullable=True)
     organization_id = db.Column(db.Integer, db.ForeignKey('organizations.organization_id', ondelete='CASCADE'), nullable=False)
-
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     last_updated = db.Column(db.DateTime, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())

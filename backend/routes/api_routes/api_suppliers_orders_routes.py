@@ -3,10 +3,12 @@ from backend.services import supplier_service, inventory_order_service, log_serv
 
 api_suppliers_orders_routes = Blueprint("api_suppliers_orders_routes", __name__)
 
+
 # ======================
-# SUPPLIERS
+# SUPPLIERS ROUTES
 # ======================
 
+# get all suppliers
 @api_suppliers_orders_routes.route("/api/suppliers", methods=["GET"])
 def get_suppliers():
     try:
@@ -27,6 +29,7 @@ def get_suppliers():
         return jsonify({"message": "Failed to fetch suppliers."}), 500
 
 
+# create a new supplier
 @api_suppliers_orders_routes.route("/api/create_supplier", methods=["POST"])
 def create_supplier():
     try:
@@ -48,6 +51,7 @@ def create_supplier():
         return jsonify({"message": "Failed to create supplier."}), 500
 
 
+# update an existing supplier
 @api_suppliers_orders_routes.route("/api/update_supplier/<int:supplier_id>", methods=["PATCH"])
 def update_supplier(supplier_id):
     try:
@@ -71,6 +75,7 @@ def update_supplier(supplier_id):
         return jsonify({"message": "Failed to update supplier."}), 500
 
 
+# delete a supplier
 @api_suppliers_orders_routes.route("/api/delete_supplier/<int:supplier_id>", methods=["DELETE"])
 def delete_supplier(supplier_id):
     try:
@@ -88,6 +93,7 @@ def delete_supplier(supplier_id):
 # INVENTORY ORDERS
 # ======================
 
+# get all inventory orders
 @api_suppliers_orders_routes.route("/api/supplier_orders", methods=["GET"])
 def get_orders():
     try:
@@ -108,6 +114,7 @@ def get_orders():
         return jsonify({"message": "Failed to fetch orders."}), 500
 
 
+# create a new inventory order
 @api_suppliers_orders_routes.route("/api/create_order", methods=["POST"])
 def create_order():
     try:
@@ -128,6 +135,7 @@ def create_order():
         return jsonify({"message": "Failed to create order."}), 500
 
 
+# update an existing inventory order
 @api_suppliers_orders_routes.route("/api/update_order/<int:order_id>", methods=["PATCH"])
 def update_order(order_id):
     try:
@@ -144,12 +152,14 @@ def update_order(order_id):
         if not success:
             return jsonify({"message": "Order not found."}), 404
 
-        log_service.log_user_action(session.get("user_id"), f"Updated order ID: {order_id} ({item_name}, Qty: {quantity})")
+        log_service.log_user_action(session.get("user_id"),
+                                    f"Updated order ID: {order_id} ({item_name}, Qty: {quantity})")
         return jsonify({"message": "Order updated."})
     except Exception:
         return jsonify({"message": "Failed to update order."}), 500
 
 
+# delete an inventory order
 @api_suppliers_orders_routes.route("/api/delete_order/<int:order_id>", methods=["DELETE"])
 def delete_order(order_id):
     try:
