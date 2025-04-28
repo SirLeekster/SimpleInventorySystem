@@ -92,11 +92,8 @@ Frontend templates and assets served via Flask.
 - Linux, WSL, or Windows (any environment that can run Python and MySQL)
 
 ---
-
-
-
-
-
+---
+---
 
 ## Setup Instructions
 
