@@ -79,8 +79,9 @@ Frontend templates and assets served via Flask.
   - `login.html`: Login screen layout.
   - `registration.html`: User sign-up template.
 
-
-
+---
+---
+---
 
 ## Self-Hosting Guide
 
@@ -91,8 +92,6 @@ Frontend templates and assets served via Flask.
 - Git
 - Linux, WSL, or Windows (any environment that can run Python and MySQL)
 
----
----
 ---
 
 ## Setup Instructions
